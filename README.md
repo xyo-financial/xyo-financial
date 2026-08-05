@@ -8,7 +8,7 @@ Centralised portal for XYO Developer Documentations and Libraries.
 * [Large Enterprises and Government](https://github.com/syniol/xyo-developer/tree/main/onboarding/enterprise-gov) <sup><i>Complete On-premises Deployment</i></sup>
 
 
-## XYO SDKs
+## Software Development Kits <sup>(SDKs)</sup>
 There are currently six production ready SDK available for:
 
 * [C++ SDK](https://github.com/syniol/xyo-sdk-cpp)
@@ -19,7 +19,7 @@ There are currently six production ready SDK available for:
 * [PHP SDK](https://github.com/syniol/xyo-sdk-php)
 
 
-## XYO API Specification
+## API Specification
 * [OpenAPI](https://github.com/syniol/xyo-specs/blob/main/openapi.yml)
 * [Postman](https://github.com/syniol/xyo-specs/blob/main/postman.json)
 
