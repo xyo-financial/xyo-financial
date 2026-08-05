@@ -11,8 +11,8 @@ Centralised portal for XYO Developer Documentations and Libraries.
 ## XYO SDKs
 There are currently six production ready SDK available for:
 
-* [C++ SDK](https://github.com/syniol/xyo-sdk-cpp) <sup><i>AI Generated</i></sup>
-* [Java SDK](https://github.com/syniol/xyo-sdk-java) <sup><i>AI Generated</i></sup>
+* [C++ SDK](https://github.com/syniol/xyo-sdk-cpp)
+* [Java SDK](https://github.com/syniol/xyo-sdk-java)
 * [Rust SDK](https://github.com/syniol/xyo-sdk-rust)
 * [Go (Golang) SDK](https://github.com/syniol/xyo-sdk-go)
 * [Node.js SDK](https://github.com/syniol/xyo-sdk-node)
