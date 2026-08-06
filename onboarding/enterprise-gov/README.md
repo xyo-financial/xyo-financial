@@ -1,6 +1,4 @@
 # Onboarding Enterprise & Government
-
-# 🚀 XYO Onboarding
 This documentation helps you to integrate XYO Enrichment Service as part of your infrastructure.
 
 ## 🧩 Components
@@ -12,7 +10,7 @@ This documentation helps you to integrate XYO Enrichment Service as part of your
 - **XYO Oracle**: `RPC` Server
 - **XYO Yoda**: `RPC` Server
 
->_**Oracle** or **Yoda** is not a commercial name, it's just a reference to the Oracle or Yoda docker image internally.
+>_**Oracle** or **Yoda** is not a commercial name, it's just a reference to the Oracle or Yoda linux image internally.
 It's for remembering the purpose of the container._
 > - **XYO Oracle**: _Because the great Oracle knows everything._
 > - **XYO Yoda**: _Because Yoda is wise._
@@ -62,7 +60,8 @@ flowchart TD
 | **XYO Yoda**       | `9093`       | TCP/RPC  | Internal Only | Internal RPC machine learning categorization service.  |
 | **PostgreSQL**     | `5432`       | TCP      | Internal Only | Default transactional and cache database.              |
 
-> 🚨 **Firewall Rule**: Ensure that ports `9091`, `9092`, and `9093` are blocked from receiving external ingress traffic, and are only accessible by containers within the private network.
+> 🚨 **Firewall Rule**: Ensure that ports `9091`, `9092`, and `9093` are blocked from receiving external ingress traffic, 
+and are only accessible by containers within the private network.
 
 ---
 
