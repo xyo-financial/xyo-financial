@@ -2,10 +2,12 @@
   <h1>XYO Developer Center</h1>
   <p><b>Enterprise-Grade AI Payment Transaction Enrichment</b></p>
   <p>
-    <a href="https://github.com/xyo-financial/specs"><img src="https://img.shields.io/badge/OpenAPI-3.0.3-green.svg" alt="OpenAPI 3.0" /></a>
+    <a href="https://github.com/xyo-financial/specs"><img src="https://img.shields.io/badge/OpenAPI-3.0.3-green.svg" alt="OpenAPI 3.0.3" /></a>
     <a href="https://github.com/xyo-financial"><img src="https://img.shields.io/badge/Compliance-RFC%207807-blue.svg" alt="RFC 7807" /></a>
-    <a href="https://github.com/xyo-financial"><img src="https://img.shields.io/badge/Architecture-Deterministic%20SDKs-blueviolet.svg" alt="Deterministic SDKs" /></a>
+    <a href="./sdk/Architecture.md"><img src="https://img.shields.io/badge/Architecture-Deterministic%20SDKs-blueviolet.svg" alt="Deterministic SDKs" /></a>
     <a href="https://github.com/xyo-financial"><img src="https://img.shields.io/badge/Security-TLS%201.3%20%7C%20Bearer%20Auth-success.svg" alt="Security" /></a>
+    <a href="https://opensource.org/licenses/BSD-3-Clause"><img src="https://img.shields.io/badge/License-BSD--3--Clause-blue.svg" alt="License: BSD-3-Clause" /></a>
+    <img src="https://img.shields.io/badge/SDK%20Version-v2.0.0-orange.svg" alt="SDK v2.0.0" />
   </p>
 </div>
 
@@ -13,18 +15,20 @@ Welcome to the central developer portal for **XYO Financial**'s API specificatio
 
 ---
 
-## 🛠 Official Client SDKs
+## 🛠 Official v2 Client SDKs
 
-All XYO client libraries are generated deterministically from our central OpenAPI specification and paired with ergonomic, idiomatic wrappers. Each SDK includes full unit and mock HTTP integration test suites with zero drift.
+All XYO client libraries are generated deterministically from our central OpenAPI 3.0.3 specification and paired with ergonomic, idiomatic wrappers. Each SDK includes full unit and mock HTTP integration test suites with zero drift.
 
-| Language / Platform | Repository | Installation | Status |
-| :--- | :--- | :--- | :--- |
-| **Node.js / TypeScript** | [xyo-financial/sdk-node](https://github.com/xyo-financial/sdk-node) | `npm install xyo-sdk` | **Stable** |
-| **Go (Golang)** | [xyo-financial/sdk-go](https://github.com/xyo-financial/sdk-go) | `go get github.com/xyo-financial/sdk-go` | **Stable** |
-| **Rust** | [xyo-financial/sdk-rust](https://github.com/xyo-financial/sdk-rust) | `cargo add xyo-sdk` | **Stable** |
-| **Java** | [xyo-financial/sdk-java](https://github.com/xyo-financial/sdk-java) | `com.xyo:xyo-sdk:1.0.0` | **Stable** |
-| **C++ (C++17)** | [xyo-financial/sdk-cpp](https://github.com/xyo-financial/sdk-cpp) | `CMake / Conan / vcpkg` | **Stable** |
-| **PHP (PHP 8.2+)** | [xyo-financial/sdk-php](https://github.com/xyo-financial/sdk-php) | `composer require xyo-financial/sdk-php` | **Stable** |
+| Language / Platform | Repository | Installation | Version | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **Node.js / TypeScript** | [xyo-financial/sdk-node](https://github.com/xyo-financial/sdk-node) | `npm install xyo-sdk` | `v2.0.0` | **Stable** |
+| **Go (Golang)** | [xyo-financial/sdk-go](https://github.com/xyo-financial/sdk-go) | `go get github.com/xyo-financial/sdk-go/v2` | `v2.0.0` | **Stable** |
+| **Rust** | [xyo-financial/sdk-rust](https://github.com/xyo-financial/sdk-rust) | `cargo add xyo-sdk` | `v2.0.0` | **Stable** |
+| **Java (Java 17+)** | [xyo-financial/sdk-java](https://github.com/xyo-financial/sdk-java) | `com.xyo.financial:xyo-sdk:2.0.0` | `v2.0.0` | **Stable** |
+| **C++ (C++17)** | [xyo-financial/sdk-cpp](https://github.com/xyo-financial/sdk-cpp) | `CMake / Conan / vcpkg` | `v2.0.0` | **Stable** |
+| **PHP (PHP 8.2+)** | [xyo-financial/sdk-php](https://github.com/xyo-financial/sdk-php) | `composer require xyo-financial/sdk-php` | `v2.0.0` | **Stable** |
+
+> For architecture principles and generation mechanics, see the [**SDK Architecture Guide**](./sdk/Architecture.md).
 
 ---
 
@@ -42,11 +46,11 @@ Every official SDK provides direct, type-safe access to XYO's core enrichment en
 
 We support flexible deployment topologies tailored to strict regulatory, compliance, and throughput requirements:
 
-* [**Basic SaaS Plan (SMEs & Fintechs)**](https://github.com/xyo-financial/xyo-financial/tree/main/onboarding/sme)  
+* [Basic SaaS Plan (SMEs & Fintechs)](./onboarding/sme)  
   Multi-tenant cloud infrastructure with global edge routing for rapid integration.
-* [**Partial On-Premises (High-Throughput)**](https://github.com/xyo-financial/xyo-financial/tree/main/onboarding/large)  
+* [Partial On-Premises (High-Throughput)](./onboarding/large)  
   Hybrid deployment utilizing local transaction caching, edge tokenization, and private secure tunnels.
-* [**Complete On-Premises (Enterprise & Government)**](https://github.com/xyo-financial/xyo-financial/tree/main/onboarding/enterprise-gov)  
+* [Complete On-Premises (Enterprise & Government)](./onboarding/enterprise-gov)  
   Fully air-gapped deployment within your private VPC or on-prem hardware for absolute data sovereignty (GDPR, PCI-DSS, PSD2 compliant).
 
 ---
