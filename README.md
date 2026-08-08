@@ -1,55 +1,75 @@
 <div align="center">
   <h1>XYO Developer Center</h1>
   <p><b>Enterprise-Grade AI Payment Transaction Enrichment</b></p>
+  <p>
+    <a href="https://github.com/xyo-financial/specs"><img src="https://img.shields.io/badge/OpenAPI-3.0.3-green.svg" alt="OpenAPI 3.0" /></a>
+    <a href="https://github.com/xyo-financial"><img src="https://img.shields.io/badge/Compliance-RFC%207807-blue.svg" alt="RFC 7807" /></a>
+    <a href="https://github.com/xyo-financial"><img src="https://img.shields.io/badge/Architecture-Deterministic%20SDKs-blueviolet.svg" alt="Deterministic SDKs" /></a>
+    <a href="https://github.com/xyo-financial"><img src="https://img.shields.io/badge/Security-TLS%201.3%20%7C%20Bearer%20Auth-success.svg" alt="Security" /></a>
+  </p>
 </div>
 
-Welcome to the central portal for XYO Financial's developer documentation, API specifications, and SDK libraries. Our infrastructure is designed to process, enrich, and categorize high-volume transaction streams with sub-millisecond latency.
-
-## 🚀 Architecture & Integration
-
-We offer flexible deployment topologies tailored to your regulatory and throughput requirements:
-
-* [**Basic SaaS Plan (SMEs)**](https://github.com/xyo-financial/xyo-financial/tree/main/onboarding/sme)
-  Multi-tenant cloud infrastructure suitable for rapid integration.
-* [**Partial On-Premises (Large Business)**](https://github.com/xyo-financial/xyo-financial/tree/main/onboarding/large)
-  Hybrid deployment utilizing local caching and private secure tunnels.
-* [**Complete On-Premises (Enterprise & Government)**](https://github.com/xyo-financial/xyo-financial/tree/main/onboarding/enterprise-gov)
-  Fully air-gapped deployment within your VPC for absolute data sovereignty (GDPR, PCI-DSS compliant).
+Welcome to the central developer portal for **XYO Financial**'s API specifications, SDK libraries, and integration guides. Our infrastructure is engineered to process, enrich, and categorize high-volume transaction narratives with sub-millisecond latency for Tier-1 financial institutions and fintechs.
 
 ---
 
-## 🛠 Official SDKs
+## 🛠 Official Client SDKs
 
-Our machine-generated SDKs ensure deterministic type-safety and 100% parity with our OpenAPI specification. We provide native clients for the following environments:
+All XYO client libraries are generated deterministically from our central OpenAPI specification and paired with ergonomic, idiomatic wrappers. Each SDK includes full unit and mock HTTP integration test suites with zero drift.
 
-| Language | Repository | Status | 
-| :--- | :--- | :--- |
-| **Node.js / TypeScript** | [xyo-financial/sdk-node](https://github.com/xyo-financial/sdk-node) | Stable |
-| **Go (Golang)** | [xyo-financial/sdk-go](https://github.com/xyo-financial/sdk-go) | Stable |
-| **Java** | [xyo-financial/sdk-java](https://github.com/xyo-financial/sdk-java) | Stable |
-| **Rust** | [xyo-financial/sdk-rust](https://github.com/xyo-financial/sdk-rust) | Beta |
-| **C++** | [xyo-financial/sdk-cpp](https://github.com/xyo-financial/sdk-cpp) | Beta |
-| **PHP** | [xyo-financial/sdk-php](https://github.com/xyo-financial/sdk-php) | Stable |
-
----
-
-## 📖 API Specification
-
-For engineers building custom integrations or leveraging our REST API directly, our specifications are the absolute source of truth:
-
-* [**OpenAPI 3.0 Specification**](https://github.com/xyo-financial/specs/blob/main/openapi.yml) - The core schema powering our network.
-* [**Postman Collection**](https://github.com/xyo-financial/specs/blob/main/postman.json) - Ready-to-use requests for interactive testing.
+| Language / Platform | Repository | Installation | Status |
+| :--- | :--- | :--- | :--- |
+| **Node.js / TypeScript** | [xyo-financial/sdk-node](https://github.com/xyo-financial/sdk-node) | `npm install xyo-sdk` | **Stable** |
+| **Go (Golang)** | [xyo-financial/sdk-go](https://github.com/xyo-financial/sdk-go) | `go get github.com/xyo-financial/sdk-go` | **Stable** |
+| **Rust** | [xyo-financial/sdk-rust](https://github.com/xyo-financial/sdk-rust) | `cargo add xyo-sdk` | **Stable** |
+| **Java** | [xyo-financial/sdk-java](https://github.com/xyo-financial/sdk-java) | `com.xyo:xyo-sdk:1.0.0` | **Stable** |
+| **C++ (C++17)** | [xyo-financial/sdk-cpp](https://github.com/xyo-financial/sdk-cpp) | `CMake / Conan / vcpkg` | **Stable** |
+| **PHP (PHP 8.2+)** | [xyo-financial/sdk-php](https://github.com/xyo-financial/sdk-php) | `composer require xyo-financial/sdk-php` | **Stable** |
 
 ---
 
-## 🔒 Security & Compliance
+## ⚡ Canonical API Operations
 
-At XYO Financial, data security is our foundational layer. 
-* **Encryption**: All data in transit is secured via TLS 1.3, and at rest using AES-256.
-* **Compliance**: We adhere strictly to GDPR data processing agreements. SOC 2 Type II certification is currently in progress.
-* **Authentication**: All endpoints require Bearer Token authentication via securely provisioned API keys.
+Every official SDK provides direct, type-safe access to XYO's core enrichment engine through three canonical operations:
+
+1. **Real-Time Single Enrichment (`enrichTransaction`)**: Synchronous enrichment for real-time payment authorization streams. Returns merchant categorization, brand logo, confidence score, and geolocation.
+2. **Asynchronous Bulk Enrichment (`enrichTransactions`)**: High-throughput batch submission for settlement files and nightly ledger processing. Returns a tracked batch ID and downloadable archive link.
+3. **Batch Status Polling (`getEnrichmentStatus`)**: Deterministic job status tracking (`READY`, `PENDING`, `FAILED`) to retrieve completed bulk enrichment archives.
+
+---
+
+## 🚀 Architecture & Deployment Topologies
+
+We support flexible deployment topologies tailored to strict regulatory, compliance, and throughput requirements:
+
+* [**Basic SaaS Plan (SMEs & Fintechs)**](https://github.com/xyo-financial/xyo-financial/tree/main/onboarding/sme)  
+  Multi-tenant cloud infrastructure with global edge routing for rapid integration.
+* [**Partial On-Premises (High-Throughput)**](https://github.com/xyo-financial/xyo-financial/tree/main/onboarding/large)  
+  Hybrid deployment utilizing local transaction caching, edge tokenization, and private secure tunnels.
+* [**Complete On-Premises (Enterprise & Government)**](https://github.com/xyo-financial/xyo-financial/tree/main/onboarding/enterprise-gov)  
+  Fully air-gapped deployment within your private VPC or on-prem hardware for absolute data sovereignty (GDPR, PCI-DSS, PSD2 compliant).
+
+---
+
+## 📖 API Specifications & Tooling
+
+Our OpenAPI specifications serve as the single source of truth for the entire platform:
+
+* [**OpenAPI 3.0.3 Specification**](https://github.com/xyo-financial/specs/blob/main/openapi.yml) — Hardened schema with rich banking transaction fixtures (Costa, Starbucks, Uber, TfL) and strict RFC 7807 problem details.
+* [**Postman Collection**](https://github.com/xyo-financial/specs/blob/main/postman.json) — Production-ready collection with pre-configured Bearer auth and payload templates.
+
+---
+
+## 🔒 Security & Enterprise Compliance
+
+* **Encryption**: All data in transit is enforced via TLS 1.3; data at rest is encrypted using AES-256-GCM.
+* **Authentication**: Bearer Token authentication via cryptographically provisioned API keys (`Authorization: Bearer <token>`).
+* **Error Semantics**: Standardized RFC 7807 Problem Details (`application/problem+json`) across all 4xx/5xx status codes.
+* **Compliance**: Zero-log transaction policies available for enterprise topologies to guarantee GDPR and banking privacy compliance.
+
+---
 
 ## 📄 License & Legal
 
-Copyright &copy; 2026 <a href='https://syniol.com' target='_blank'>Syniol Limited</a>. All rights reserved. 
-Use of these SDKs is subject to the XYO Financial Master Services Agreement.
+Copyright &copy; 2026 <a href='https://syniol.com' target='_blank'>Syniol Limited</a>. All rights reserved.  
+Distributed under the **BSD-3-Clause License**. Use of these SDKs is subject to the XYO Financial Master Services Agreement.
