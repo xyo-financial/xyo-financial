@@ -239,9 +239,9 @@ Syniol also maintains official client SDKs for other ecosystems:
   XyoClient client = new XyoClient(config);
   EnrichmentResponse res = client.enrichTransaction(new EnrichmentRequest("SPOTIFY PREMIUM", "SE"));
   ```
-- **PHP Package**: `xyo-financial/sdk-php` (on [packagist.org](https://packagist.org/packages/xyo-financial/sdk-php)).
+- **PHP Package**: `xyo/sdk` (on [packagist.org](https://packagist.org/packages/xyo/sdk)).
   ```bash
-  composer require xyo-financial/sdk-php
+  composer require xyo/sdk
   ```
   ```php
   $config = new ClientConfig('your-api-token', null, 'http://localhost:8080');

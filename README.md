@@ -19,14 +19,14 @@ Welcome to the central developer portal for **XYO Financial**'s API specificatio
 
 All XYO client libraries are generated deterministically from our central OpenAPI 3.0.3 specification and paired with ergonomic, idiomatic wrappers. Each SDK includes full unit and mock HTTP integration test suites with zero drift.
 
-| Language / Platform | Repository | Installation | Version | Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **Node.js / TypeScript** | [xyo-financial/sdk-node](https://github.com/xyo-financial/sdk-node) | `npm install xyo-sdk` | `v2.0.0` | **Stable** |
-| **Go (Golang)** | [xyo-financial/sdk-go](https://github.com/xyo-financial/sdk-go) | `go get github.com/xyo-financial/sdk-go/v2` | `v2.0.0` | **Stable** |
-| **Rust** | [xyo-financial/sdk-rust](https://github.com/xyo-financial/sdk-rust) | `cargo add xyo-sdk` | `v2.0.0` | **Stable** |
-| **Java (Java 17+)** | [xyo-financial/sdk-java](https://github.com/xyo-financial/sdk-java) | `com.xyo.financial:xyo-sdk:2.0.0` | `v2.0.0` | **Stable** |
-| **C++ (C++17)** | [xyo-financial/sdk-cpp](https://github.com/xyo-financial/sdk-cpp) | `CMake / Conan / vcpkg` | `v2.0.0` | **Stable** |
-| **PHP (PHP 8.2+)** | [xyo-financial/sdk-php](https://github.com/xyo-financial/sdk-php) | `composer require xyo-financial/sdk-php` | `v2.0.0` | **Stable** |
+| Language / Platform      | Repository                                                          | Installation                                | Version  | Status     |
+|:-------------------------|:--------------------------------------------------------------------|:--------------------------------------------|:---------|:-----------|
+| **C++ (C++17)**          | [xyo-financial/sdk-cpp](https://github.com/xyo-financial/sdk-cpp)   | `CMake / Conan / vcpkg`                     | `v2.0.0` | **Stable** |
+| **Java (Java 17+)**      | [xyo-financial/sdk-java](https://github.com/xyo-financial/sdk-java) | `com.xyo.financial:xyo-sdk:2.0.0`           | `v2.0.0` | **Stable** |
+| **Go (Golang)**          | [xyo-financial/sdk-go](https://github.com/xyo-financial/sdk-go)     | `go get github.com/xyo-financial/sdk-go/v2` | `v2.0.0` | **Stable** |
+| **Rust**                 | [xyo-financial/sdk-rust](https://github.com/xyo-financial/sdk-rust) | `cargo add xyo-sdk`                         | `v2.0.0` | **Stable** |
+| **Node.js / TypeScript** | [xyo-financial/sdk-node](https://github.com/xyo-financial/sdk-node) | `npm install xyo-sdk`                       | `v2.0.0` | **Stable** |
+| **PHP (PHP 8.2+)**       | [xyo-financial/sdk-php](https://github.com/xyo-financial/sdk-php)   | `composer require xyo/sdk`                  | `v2.0.0` | **Stable** |
 
 > For architecture principles and generation mechanics, see the [**SDK Architecture Guide**](./sdk/Architecture.md).
 
