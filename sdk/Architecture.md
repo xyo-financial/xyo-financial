@@ -103,4 +103,4 @@ Regardless of language, all XYO client libraries expose a unified 3-operation su
 
 ### 🔐 Licence & Governance
 Copyright &copy; 2026 <a href="https://syniol.com" target="_blank">Syniol Limited</a>. All rights reserved.  
-Distributed under the **BSD-3-Clause License**.
+Distributed under the **Apache License, Version 2.0**.
