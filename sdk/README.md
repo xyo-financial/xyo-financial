@@ -12,14 +12,16 @@ The **XYO Financial SDK Suite** provides official, production-grade client libra
 
 ### Supported Language SDKs
 
-| Language | Repository | Package / Module Name | Generated Engine |
-|---|---|---|---|
-| **Go (Golang)** | [`xyo-financial/sdk-go`](https://github.com/xyo-financial/sdk-go) | `github.com/xyo-financial/sdk-go/v2` | `go` (`openapi` package) |
-| **Node.js / TypeScript** | [`xyo-financial/sdk-node`](https://github.com/xyo-financial/sdk-node) | `@xyo-financial/sdk` | `typescript-fetch` |
-| **Java** | [`xyo-financial/sdk-java`](https://github.com/xyo-financial/sdk-java) | `com.xyo:xyo-sdk` | `java` (Native library) |
-| **Rust** | [`xyo-financial/sdk-rust`](https://github.com/xyo-financial/sdk-rust) | `xyo-financial` | `rust` (`openapi-client`) |
-| **C++ (C++17)** | [`xyo-financial/sdk-cpp`](https://github.com/xyo-financial/sdk-cpp) | `xyo-sdk` | `cpp-restsdk` |
-| **PHP (PHP 8.2+)** | [`xyo-financial/sdk-php`](https://github.com/xyo-financial/sdk-php) | `xyo-financial/sdk-php` | `php` (`lib/`) |
+| Language | Repository | Package / Module Name | Generated Engine | Status |
+|---|---|---|---|---|
+| **Go (Golang)** | [`xyo-financial/sdk-go`](https://github.com/xyo-financial/sdk-go) | `github.com/xyo-financial/sdk-go/v2` | `go` (`openapi` package) | **Stable** |
+| **Node.js / TypeScript** | [`xyo-financial/sdk-node`](https://github.com/xyo-financial/sdk-node) | `@xyo-financial/sdk` | `typescript-fetch` | **Stable** |
+| **Java** | [`xyo-financial/sdk-java`](https://github.com/xyo-financial/sdk-java) | `com.xyo:xyo-sdk` | `java` (Native library) | **Stable** |
+| **Rust** | [`xyo-financial/sdk-rust`](https://github.com/xyo-financial/sdk-rust) | `xyo-financial` | `rust` (`openapi-client`) | **Stable** |
+| **C++ (C++17)** | [`xyo-financial/sdk-cpp`](https://github.com/xyo-financial/sdk-cpp) | `xyo-sdk` | `cpp-restsdk` | **Stable** |
+| **PHP (PHP 8.2+)** | [`xyo-financial/sdk-php`](https://github.com/xyo-financial/sdk-php) | `xyo-financial/sdk-php` | `php` (`lib/`) | **Stable** |
+| **Python (3.9+)** | [`xyo-financial/sdk-python`](https://github.com/xyo-financial/sdk-python) | `xyo-sdk` | `python` | *Upcoming* |
+| **.NET / C# (.NET 8+)** | [`xyo-financial/sdk-dotnet`](https://github.com/xyo-financial/sdk-dotnet) | `Xyo.Sdk` | `csharp-netcore` | *Upcoming* |
 
 ---
 
