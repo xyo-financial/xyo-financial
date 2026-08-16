@@ -240,7 +240,7 @@ if __name__ == "__main__":
 
 ---
 
-### 3.4 Java (Java 17+) Enterprise Integration
+### 3.4 Java (Java 17+) Integration
 
 #### Dependency (`pom.xml`)
 ```xml

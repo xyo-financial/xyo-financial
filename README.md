@@ -1,6 +1,6 @@
 <div align="center">
   <h1>XYO Developer Center</h1>
-  <p><b>Enterprise-Grade AI Payment Transaction Enrichment</b></p>
+  <p><b>AI Payment Transaction Enrichment</b></p>
   <p>
     <a href="https://github.com/xyo-financial/specs"><img src="https://img.shields.io/badge/OpenAPI-3.0.3-green.svg" alt="OpenAPI 3.0.3" /></a>
     <a href="https://github.com/xyo-financial"><img src="https://img.shields.io/badge/Compliance-RFC%207807-blue.svg" alt="RFC 7807" /></a>
@@ -66,7 +66,7 @@ Our OpenAPI specifications serve as the single source of truth for the entire pl
 
 ---
 
-## 🔒 Security & Enterprise Compliance
+## 🔒 Security & Compliance
 
 * **Encryption**: All data in transit is enforced via TLS 1.3; data at rest is encrypted using AES-256-GCM.
 * **Authentication**: Bearer Token authentication via cryptographically provisioned API keys (`Authorization: Bearer <token>`).

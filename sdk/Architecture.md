@@ -79,7 +79,7 @@ Regardless of language, all XYO client libraries expose a unified 3-operation su
 
 ---
 
-## 🔒 Security & Enterprise Reliability Guarantees
+## 🔒 Security & Reliability Guarantees
 
 1. **Zero PII Leakage**: The SDKs only transmit merchant narrative strings (`content`) and ISO country codes (`countryCode`). No PAN, CVV, cardholder names, or banking account numbers ever touch the client transport layer.
 2. **TLS 1.3 Strict Enforcement**: All communication is enforced over TLS 1.3 with modern AEAD cipher suites.
