@@ -1,0 +1,118 @@
+{{- if .Values.enrichment.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "xyo-appliance.fullname" . }}-enrichment
+  labels:
+    {{- include "xyo-appliance.componentLabels" (dict "root" . "component" "enrichment") | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.enrichment.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "xyo-appliance.componentSelectorLabels" (dict "root" . "component" "enrichment") | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      labels:
+        {{- include "xyo-appliance.componentLabels" (dict "root" . "component" "enrichment") | nindent 8 }}
+    spec:
+      {{- include "xyo-appliance.imagePullSecrets" . | nindent 6 }}
+      serviceAccountName: {{ include "xyo-appliance.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: enrichment
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ include "xyo-appliance.imageRegistry" (dict "image" .Values.enrichment.image "root" .) }}{{ .Values.enrichment.image.repository }}:{{ .Values.enrichment.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.enrichment.image.pullPolicy }}
+          ports:
+            - name: grpc
+              containerPort: {{ .Values.enrichment.service.targetPort | default 9091 }}
+              protocol: TCP
+          env:
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "xyo-appliance.fullname" . }}-config
+                  key: LOG_LEVEL_ENRICHMENT
+            - name: XYO_ORACLE_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "xyo-appliance.fullname" . }}-config
+                  key: XYO_ORACLE_ADDR
+            - name: XYO_YODA_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "xyo-appliance.fullname" . }}-config
+                  key: XYO_YODA_ADDR
+            - name: XYO_LOGOS_DIR
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "xyo-appliance.fullname" . }}-config
+                  key: XYO_LOGOS_DIR
+            - name: XYO_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "xyo-appliance.licenseSecretName" . }}
+                  key: {{ include "xyo-appliance.licenseSecretKey" . }}
+          {{- if .Values.enrichment.probes.liveness.enabled }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.enrichment.probes.liveness.tcpSocket.port }}
+            initialDelaySeconds: {{ .Values.enrichment.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.enrichment.probes.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.enrichment.probes.liveness.timeoutSeconds }}
+            failureThreshold: {{ .Values.enrichment.probes.liveness.failureThreshold }}
+          {{- end }}
+          {{- if .Values.enrichment.probes.readiness.enabled }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.enrichment.probes.readiness.tcpSocket.port }}
+            initialDelaySeconds: {{ .Values.enrichment.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.enrichment.probes.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.enrichment.probes.readiness.timeoutSeconds }}
+            failureThreshold: {{ .Values.enrichment.probes.readiness.failureThreshold }}
+          {{- end }}
+          {{- if .Values.enrichment.probes.startup.enabled }}
+          startupProbe:
+            tcpSocket:
+              port: {{ .Values.enrichment.probes.startup.tcpSocket.port }}
+            initialDelaySeconds: {{ .Values.enrichment.probes.startup.initialDelaySeconds }}
+            periodSeconds: {{ .Values.enrichment.probes.startup.periodSeconds }}
+            failureThreshold: {{ .Values.enrichment.probes.startup.failureThreshold }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.enrichment.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- if .Values.persistence.logos.enabled }}
+            - name: logos-volume
+              mountPath: {{ .Values.persistence.logos.mountPath }}
+            {{- end }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- if .Values.persistence.logos.enabled }}
+        - name: logos-volume
+          persistentVolumeClaim:
+            claimName: {{ include "xyo-appliance.logosPvcName" . }}
+        {{- end }}
+      {{- with .Values.enrichment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.enrichment.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.enrichment.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

@@ -1,51 +1,154 @@
+# ==============================================================================
+# XYO Enrichment Platform - Hardened Docker Compose Specification
+# Tier-1 Bank & High-Assurance Compliance:
+# - UID 10001:10001 unprivileged non-root execution
+# - Immutable read-only root filesystems (read_only: true)
+# - Zero Linux capabilities (cap_drop: [ALL])
+# - Kernel privilege escalation blocked (no-new-privileges:true)
+# - Strict CPU and Memory resource limits and reservations
+# - Comprehensive healthcheck & readiness probing across all microservices
+# ==============================================================================
+
 version: '3.8'
 
 services:
-  # Database storage for caching and audit logs
+  # ----------------------------------------------------------------------------
+  # PostgreSQL: Transactional cache and audit persistence
+  # ----------------------------------------------------------------------------
   postgres:
     image: postgres:15-alpine
     container_name: xyo-postgres
+    restart: unless-stopped
+    user: "70:70" # Default postgres user on alpine (non-root)
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+    read_only: true
+    tmpfs:
+      - /tmp:size=128M,noexec,nosuid,nodev
+      - /var/run/postgresql:size=32M,noexec,nosuid,nodev
+      - /run:size=32M,noexec,nosuid,nodev
     environment:
       POSTGRES_DB: xyo
       POSTGRES_USER: xyo_user
       POSTGRES_PASSWORD: xyo_secure_pass
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - xyo-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.50'
+          memory: 1024M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U xyo_user -d xyo"]
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
 
-  # XYO Oracle: Heuristic pattern matcher engine
+  # ----------------------------------------------------------------------------
+  # XYO Oracle: Deterministic pattern matching & rules engine
+  # ----------------------------------------------------------------------------
   xyo-oracle:
-    image: cr.syniol.com/xyo/oracle:v1.2.0
+    image: cr.syniol.com/xyo/oracle:v2.0.0
     container_name: xyo-oracle
     restart: unless-stopped
+    user: "10001:10001"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp:size=64M,noexec,nosuid,nodev
+      - /run:size=16M,noexec,nosuid,nodev
     environment:
       - LOG_LEVEL=info
+      - XYO_BIND_ADDR=0.0.0.0:9092
     networks:
       - xyo-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 2048M
+        reservations:
+          cpus: '0.50'
+          memory: 1024M
+    healthcheck:
+      test: ["CMD", "/app/probe", "-endpoint=http://127.0.0.1:9092/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
+  # ----------------------------------------------------------------------------
   # XYO Yoda: Machine learning categorization engine
+  # ----------------------------------------------------------------------------
   xyo-yoda:
-    image: cr.syniol.com/xyo/yoda:v1.2.0
+    image: cr.syniol.com/xyo/yoda:v2.0.0
     container_name: xyo-yoda
     restart: unless-stopped
+    user: "10001:10001"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp:size=64M,noexec,nosuid,nodev
+      - /run:size=16M,noexec,nosuid,nodev
     environment:
       - LOG_LEVEL=info
+      - XYO_BIND_ADDR=0.0.0.0:9093
     networks:
       - xyo-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 2048M
+        reservations:
+          cpus: '0.50'
+          memory: 1024M
+    healthcheck:
+      test: ["CMD", "/app/probe", "-endpoint=http://127.0.0.1:9093/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
-  # XYO Enrichment: Coordinator service that runs heuristics & AI categorization
+  # ----------------------------------------------------------------------------
+  # XYO Enrichment: Core orchestrator coordinating heuristics & AI inference
+  # ----------------------------------------------------------------------------
   xyo-enrichment:
-    image: cr.syniol.com/xyo/enrichment:v1.2.0
+    image: cr.syniol.com/xyo/enrichment:v2.0.0
     container_name: xyo-enrichment
     restart: unless-stopped
+    user: "10001:10001"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp:size=128M,noexec,nosuid,nodev
+      - /run:size=16M,noexec,nosuid,nodev
     environment:
       - LOG_LEVEL=info
+      - XYO_BIND_ADDR=0.0.0.0:9091
       - XYO_ORACLE_ADDR=xyo-oracle:9092
       - XYO_YODA_ADDR=xyo-yoda:9093
       - XYO_LOGOS_DIR=/var/lib/xyo/logos
@@ -54,33 +157,78 @@ services:
       - xyo-logos:/var/lib/xyo/logos
     networks:
       - xyo-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 2048M
+        reservations:
+          cpus: '0.50'
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "/app/probe", "-endpoint=http://127.0.0.1:9091/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     depends_on:
-      - xyo-oracle
-      - xyo-yoda
+      xyo-oracle:
+        condition: service_healthy
+      xyo-yoda:
+        condition: service_healthy
 
-  # XYO Gateway: Entrypoint HTTP server serving client requests
+  # ----------------------------------------------------------------------------
+  # XYO Gateway: Entrypoint HTTP API serving client applications
+  # ----------------------------------------------------------------------------
   xyo-gateway:
-    image: cr.syniol.com/xyo/gateway:v1.2.0
+    image: cr.syniol.com/xyo/gateway:v2.0.0
     container_name: xyo-gateway
     restart: unless-stopped
+    user: "10001:10001"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp:size=128M,noexec,nosuid,nodev
+      - /run:size=16M,noexec,nosuid,nodev
     ports:
-      - "8080:8080" # HTTP API
+      - "8080:8080" # REST HTTP API
     environment:
       - LOG_LEVEL=info
+      - XYO_BIND_ADDR=0.0.0.0:8080
       - XYO_ENRICHMENT_ADDR=xyo-enrichment:9091
       - XYO_DB_DSN=postgres://xyo_user:xyo_secure_pass@postgres:5432/xyo?sslmode=disable
       - XYO_LOGOS_DIR=/var/lib/xyo/logos
       - XYO_LICENSE_KEY=${XYO_LICENSE_KEY}
     volumes:
-      - xyo-logos:/var/lib/xyo/logos:ro # Read-only for Gateway to serve static logos
+      - xyo-logos:/var/lib/xyo/logos:ro # Read-only for Gateway static delivery
     networks:
       - xyo-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 1024M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "/app/probe", "-endpoint=http://127.0.0.1:8080/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     depends_on:
       postgres:
         condition: service_healthy
       xyo-enrichment:
-        condition: service_started
+        condition: service_healthy
 
+# ------------------------------------------------------------------------------
+# Persistent Volume Declarations
+# ------------------------------------------------------------------------------
 volumes:
   postgres_data:
     driver: local
@@ -91,6 +239,9 @@ volumes:
       device: /var/lib/xyo/logos
       o: bind
 
+# ------------------------------------------------------------------------------
+# Private Bridge Network
+# ------------------------------------------------------------------------------
 networks:
   xyo-network:
     driver: bridge

@@ -1,0 +1,124 @@
+{{- if .Values.gateway.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "xyo-appliance.fullname" . }}-gateway
+  labels:
+    {{- include "xyo-appliance.componentLabels" (dict "root" . "component" "gateway") | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.gateway.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "xyo-appliance.componentSelectorLabels" (dict "root" . "component" "gateway") | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      labels:
+        {{- include "xyo-appliance.componentLabels" (dict "root" . "component" "gateway") | nindent 8 }}
+    spec:
+      {{- include "xyo-appliance.imagePullSecrets" . | nindent 6 }}
+      serviceAccountName: {{ include "xyo-appliance.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: gateway
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ include "xyo-appliance.imageRegistry" (dict "image" .Values.gateway.image "root" .) }}{{ .Values.gateway.image.repository }}:{{ .Values.gateway.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.gateway.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.gateway.service.targetPort | default 8080 }}
+              protocol: TCP
+          env:
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "xyo-appliance.fullname" . }}-config
+                  key: LOG_LEVEL_GATEWAY
+            - name: PORT
+              value: {{ .Values.gateway.service.targetPort | default 8080 | quote }}
+            - name: XYO_ENRICHMENT_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "xyo-appliance.fullname" . }}-config
+                  key: XYO_ENRICHMENT_ADDR
+            - name: XYO_LOGOS_DIR
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "xyo-appliance.fullname" . }}-config
+                  key: XYO_LOGOS_DIR
+            - name: XYO_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "xyo-appliance.licenseSecretName" . }}
+                  key: {{ include "xyo-appliance.licenseSecretKey" . }}
+            - name: XYO_DB_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "xyo-appliance.dbSecretName" . }}
+                  key: dsn
+          {{- if .Values.gateway.probes.liveness.enabled }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.gateway.probes.liveness.path }}
+              port: {{ .Values.gateway.probes.liveness.port }}
+            initialDelaySeconds: {{ .Values.gateway.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.gateway.probes.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.gateway.probes.liveness.timeoutSeconds }}
+            failureThreshold: {{ .Values.gateway.probes.liveness.failureThreshold }}
+          {{- end }}
+          {{- if .Values.gateway.probes.readiness.enabled }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.gateway.probes.readiness.path }}
+              port: {{ .Values.gateway.probes.readiness.port }}
+            initialDelaySeconds: {{ .Values.gateway.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.gateway.probes.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.gateway.probes.readiness.timeoutSeconds }}
+            failureThreshold: {{ .Values.gateway.probes.readiness.failureThreshold }}
+          {{- end }}
+          {{- if .Values.gateway.probes.startup.enabled }}
+          startupProbe:
+            httpGet:
+              path: {{ .Values.gateway.probes.startup.path }}
+              port: {{ .Values.gateway.probes.startup.port }}
+            initialDelaySeconds: {{ .Values.gateway.probes.startup.initialDelaySeconds }}
+            periodSeconds: {{ .Values.gateway.probes.startup.periodSeconds }}
+            failureThreshold: {{ .Values.gateway.probes.startup.failureThreshold }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.gateway.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- if .Values.persistence.logos.enabled }}
+            - name: logos-volume
+              mountPath: {{ .Values.persistence.logos.mountPath }}
+              readOnly: true
+            {{- end }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- if .Values.persistence.logos.enabled }}
+        - name: logos-volume
+          persistentVolumeClaim:
+            claimName: {{ include "xyo-appliance.logosPvcName" . }}
+        {{- end }}
+      {{- with .Values.gateway.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.gateway.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.gateway.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

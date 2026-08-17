@@ -1,3 +1,14 @@
+# ==============================================================================
+# XYO Enrichment Platform - Gateway Entrypoint & Public REST API
+# Tier-1 Enterprise & High-Assurance Compliance:
+# - Pod Security Standards (PSS) Restricted
+# - OpenShift Security Context Constraints (SCC) restricted-v2
+# - Non-root execution (UID/GID 10001:10001)
+# - Immutable read-only root filesystem (readOnlyRootFilesystem: true)
+# - Zero Linux capabilities (drop: [ALL])
+# - Strict CPU and Memory limits & reservations
+# ==============================================================================
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -5,8 +16,12 @@ metadata:
   namespace: xyo
   labels:
     app: xyo-gateway
+    app.kubernetes.io/name: xyo-gateway
+    app.kubernetes.io/component: api-gateway
+    app.kubernetes.io/part-of: xyo-appliance
+    app.kubernetes.io/version: "v2.0.0"
 spec:
-  replicas: 2 # Scale for high availability and load balancing
+  replicas: 2 # Scaled for high availability and load balancing
   selector:
     matchLabels:
       app: xyo-gateway
@@ -14,19 +29,37 @@ spec:
     metadata:
       labels:
         app: xyo-gateway
+        app.kubernetes.io/name: xyo-gateway
+        app.kubernetes.io/component: api-gateway
+        app.kubernetes.io/part-of: xyo-appliance
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
       imagePullSecrets:
         - name: syniol-registry-secret
       containers:
         - name: gateway
-          image: cr.syniol.com/xyo/gateway:v1.2.0
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 8080
-              name: http
+          image: cr.syniol.com/xyo/gateway:v2.0.0
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            capabilities:
+              drop:
+                - ALL
           env:
             - name: LOG_LEVEL
               value: "info"
+            - name: XYO_BIND_ADDR
+              value: "0.0.0.0:8080"
             - name: XYO_ENRICHMENT_ADDR
               value: "xyo-enrichment:9091"
             - name: XYO_DB_DSN
@@ -38,44 +71,69 @@ spec:
                 secretKeyRef:
                   name: xyo-license-secret
                   key: license-key
+          ports:
+            - containerPort: 8080
+              name: http
           volumeMounts:
             - mountPath: /var/lib/xyo/logos
               name: xyo-logos-volume
-              readOnly: true # Gateway only needs to serve the files
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 15
-            periodSeconds: 20
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 5
-            periodSeconds: 10
+              readOnly: true # Gateway only needs read access to serve cached logo assets
+            - mountPath: /tmp
+              name: tmp
+            - mountPath: /run
+              name: run
           resources:
             requests:
               cpu: 250m
               memory: 512Mi
             limits:
-              cpu: 500m
+              cpu: 1000m
               memory: 1Gi
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 3
       volumes:
         - name: xyo-logos-volume
           persistentVolumeClaim:
             claimName: xyo-logos-pvc
+        - name: tmp
+          emptyDir:
+            medium: Memory
+            sizeLimit: 128Mi
+        - name: run
+          emptyDir:
+            medium: Memory
+            sizeLimit: 16Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: xyo-gateway
   namespace: xyo
+  labels:
+    app: xyo-gateway
+    app.kubernetes.io/name: xyo-gateway
+    app.kubernetes.io/component: api-gateway
+    app.kubernetes.io/part-of: xyo-appliance
 spec:
-  type: ClusterIP # Change to LoadBalancer or NodePort if exposing directly
+  type: ClusterIP # Change to LoadBalancer or Ingress integration as needed
   ports:
     - port: 8080
       targetPort: 8080
       name: http
   selector:
     app: xyo-gateway
+

@@ -1,0 +1,24 @@
+{{- if .Values.gateway.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "xyo-appliance.fullname" . }}-gateway
+  labels:
+    {{- include "xyo-appliance.componentLabels" (dict "root" . "component" "gateway") | nindent 4 }}
+  {{- with .Values.gateway.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.gateway.service.type }}
+  ports:
+    - port: {{ .Values.gateway.service.port }}
+      targetPort: {{ .Values.gateway.service.targetPort | default 8080 }}
+      protocol: TCP
+      name: http
+      {{- if and (or (eq .Values.gateway.service.type "NodePort") (eq .Values.gateway.service.type "LoadBalancer")) .Values.gateway.service.nodePort }}
+      nodePort: {{ .Values.gateway.service.nodePort }}
+      {{- end }}
+  selector:
+    {{- include "xyo-appliance.componentSelectorLabels" (dict "root" . "component" "gateway") | nindent 4 }}
+{{- end }}
