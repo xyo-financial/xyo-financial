@@ -1,0 +1,22 @@
+apiVersion: v2
+name: xyo-appliance
+description: Enterprise Air-Gapped AI Payment Transaction Enrichment Appliance for Kubernetes & OpenShift
+type: application
+version: 2.0.0
+appVersion: "v2.0.0"
+keywords:
+  - xyo
+  - payment-enrichment
+  - fintech
+  - air-gapped
+  - machine-learning
+  - kubernetes
+  - openshift
+home: https://xyo.syniol.com
+sources:
+  - https://github.com/xyo-financial/sdk-java
+maintainers:
+  - name: Syniol Limited
+    email: support@syniol.com
+    url: https://syniol.com
+icon: https://raw.githubusercontent.com/xyo-financial/assets/main/logo.png

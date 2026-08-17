@@ -1,3 +1,14 @@
+# ==============================================================================
+# XYO Enrichment Platform - Enrichment Orchestration Coordinator
+# Tier-1 Enterprise & High-Assurance Compliance:
+# - Pod Security Standards (PSS) Restricted
+# - OpenShift Security Context Constraints (SCC) restricted-v2
+# - Non-root execution (UID/GID 10001:10001)
+# - Immutable read-only root filesystem (readOnlyRootFilesystem: true)
+# - Zero Linux capabilities (drop: [ALL])
+# - Strict CPU and Memory limits & reservations
+# ==============================================================================
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -5,8 +16,12 @@ metadata:
   namespace: xyo
   labels:
     app: xyo-enrichment
+    app.kubernetes.io/name: xyo-enrichment
+    app.kubernetes.io/component: orchestrator
+    app.kubernetes.io/part-of: xyo-appliance
+    app.kubernetes.io/version: "v2.0.0"
 spec:
-  replicas: 2 # Scale for high availability
+  replicas: 2 # Scaled for high availability
   selector:
     matchLabels:
       app: xyo-enrichment
@@ -14,19 +29,37 @@ spec:
     metadata:
       labels:
         app: xyo-enrichment
+        app.kubernetes.io/name: xyo-enrichment
+        app.kubernetes.io/component: orchestrator
+        app.kubernetes.io/part-of: xyo-appliance
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
       imagePullSecrets:
         - name: syniol-registry-secret
       containers:
         - name: enrichment
-          image: cr.syniol.com/xyo/enrichment:v1.2.0
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 9091
-              name: grpc
+          image: cr.syniol.com/xyo/enrichment:v2.0.0
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            capabilities:
+              drop:
+                - ALL
           env:
             - name: LOG_LEVEL
               value: "info"
+            - name: XYO_BIND_ADDR
+              value: "0.0.0.0:9091"
             - name: XYO_ORACLE_ADDR
               value: "xyo-oracle:9092"
             - name: XYO_YODA_ADDR
@@ -38,29 +71,68 @@ spec:
                 secretKeyRef:
                   name: xyo-license-secret
                   key: license-key
+          ports:
+            - containerPort: 9091
+              name: grpc
           volumeMounts:
             - mountPath: /var/lib/xyo/logos
               name: xyo-logos-volume
+            - mountPath: /tmp
+              name: tmp
+            - mountPath: /run
+              name: run
           resources:
             requests:
               cpu: 500m
               memory: 1Gi
             limits:
-              cpu: 1000m
+              cpu: 2000m
               memory: 2Gi
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 9091
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 9091
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 3
       volumes:
         - name: xyo-logos-volume
           persistentVolumeClaim:
             claimName: xyo-logos-pvc
+        - name: tmp
+          emptyDir:
+            medium: Memory
+            sizeLimit: 128Mi
+        - name: run
+          emptyDir:
+            medium: Memory
+            sizeLimit: 16Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: xyo-enrichment
   namespace: xyo
+  labels:
+    app: xyo-enrichment
+    app.kubernetes.io/name: xyo-enrichment
+    app.kubernetes.io/component: orchestrator
+    app.kubernetes.io/part-of: xyo-appliance
 spec:
+  type: ClusterIP
   ports:
     - port: 9091
       targetPort: 9091
+      name: grpc
   selector:
     app: xyo-enrichment
+

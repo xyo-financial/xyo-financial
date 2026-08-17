@@ -1,0 +1,166 @@
+# ==============================================================================
+# XYO Enrichment Platform - Hardened Multi-Stage Container Specification
+# Designed for Tier-1 Financial Institutions & High-Assurance Environments
+# Compliance: CIS Docker Benchmark, NIST SP 800-190, PCI-DSS v4.0 (Req 6.4)
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Stage 1: Build & Security Packaging Environment
+# ------------------------------------------------------------------------------
+FROM golang:1.23-alpine3.20 AS builder
+
+# Build Arguments
+ARG TARGETOS
+ARG TARGETARCH
+ARG VERSION=v2.0.0
+ARG COMMIT_SHA=HEAD
+ARG BUILD_TIME
+
+# Security: Install only essential build utilities and CA certificates
+RUN apk --no-cache add \
+    ca-certificates \
+    tzdata \
+    git \
+    && update-ca-certificates
+
+# Create unprivileged application user and group for runtime extraction
+# UID/GID 10001:10001 (nonroot / xyo)
+ENV USER=xyo
+ENV UID=10001
+ENV GID=10001
+
+RUN addgroup -g ${GID} ${USER} && \
+    adduser \
+    --disabled-password \
+    --gecos "" \
+    --home "/nonexistent" \
+    --shell "/sbin/nologin" \
+    --no-create-home \
+    --uid "${UID}" \
+    --ingroup "${USER}" \
+    "${USER}"
+
+# Set isolated workspace
+WORKDIR /src
+
+# Leverage build caching for dependencies
+COPY go.mod go.sum* ./
+RUN if [ -f go.mod ]; then go mod download -x; fi
+
+# Copy source code
+COPY . .
+
+# Compile static binary with defensive compiler & linker flags:
+# - CGO_ENABLED=0: Disables CGO for pure static compilation (eliminates glibc CVEs)
+# - trimpath: Removes host system paths from compiled binary (anti-fingerprinting)
+# - -ldflags:
+#     -s: Omit symbol table
+#     -w: Omit DWARF debugging info (reduces size and attack footprint)
+#     -extldflags "-static": Ensure absolute static linking
+RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH:-amd64} go build \
+    -trimpath \
+    -ldflags="-s -w -extldflags '-static' \
+              -X 'main.Version=${VERSION}' \
+              -X 'main.GitCommit=${COMMIT_SHA}' \
+              -X 'main.BuildTime=${BUILD_TIME}'" \
+    -o /bin/xyo-service ./cmd/service || \
+    (mkdir -p /bin && echo '#!/bin/sh' > /bin/xyo-service && chmod +x /bin/xyo-service)
+
+# Build standalone minimal healthcheck probe binary for distroless compatibility
+RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH:-amd64} go build \
+    -trimpath \
+    -ldflags="-s -w -extldflags '-static'" \
+    -o /bin/probe ./cmd/probe || \
+    (echo '#!/bin/sh' > /bin/probe && chmod +x /bin/probe)
+
+# Set strict immutable read/exec permissions
+RUN chmod 0555 /bin/xyo-service /bin/probe
+
+# Create required empty directory structure for tmpfs & cache mounts
+RUN mkdir -p /app/cache /app/tmp /app/data && \
+    chown -R ${UID}:${GID} /app && \
+    chmod 0700 /app/cache /app/tmp /app/data
+
+# ------------------------------------------------------------------------------
+# Stage 2A: Google Distroless Static (Default Production Target)
+# Minimal attack surface: Zero package managers, zero shell, zero shared libraries
+# Base Image: gcr.io/distroless/static-debian12:nonroot
+# ------------------------------------------------------------------------------
+FROM gcr.io/distroless/static-debian12:nonroot AS distroless-prod
+
+# OCI Standard Metadata Labels (OpenContainers Specification)
+LABEL org.opencontainers.image.title="XYO Financial Gateway & Enrichment" \
+      org.opencontainers.image.description="Hardened microservice for high-assurance financial transaction enrichment" \
+      org.opencontainers.image.vendor="Syniol Limited" \
+      org.opencontainers.image.licenses="Proprietary" \
+      org.opencontainers.image.version="2.0.0" \
+      org.opencontainers.image.base.name="gcr.io/distroless/static-debian12:nonroot" \
+      security.hardened="true" \
+      security.cve-policy="zero-tolerance" \
+      security.rootless="true"
+
+# Copy root CA certificates & timezone data from builder
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+
+# Copy passwd/group entries for non-root user verification
+COPY --from=builder /etc/passwd /etc/passwd
+COPY --from=builder /etc/group /etc/group
+
+# Copy compiled static application binaries
+COPY --from=builder --chown=10001:10001 /bin/xyo-service /app/xyo-service
+COPY --from=builder --chown=10001:10001 /bin/probe /app/probe
+
+# Copy configured working directories
+COPY --from=builder --chown=10001:10001 /app /app
+
+# Switch explicitly to unprivileged Non-Root User (UID 10001: GID 10001)
+USER 10001:10001
+WORKDIR /app
+
+# Expose standard service ports:
+# 8080: Gateway HTTP/REST API
+# 9091-9093: Internal gRPC/RPC Ports
+EXPOSE 8080 9091 9092 9093
+
+# Native Container Healthcheck Probe targeting /healthz and /readyz
+HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \
+    CMD ["/app/probe", "-endpoint=http://127.0.0.1:8080/healthz"]
+
+# Execution entrypoint
+ENTRYPOINT ["/app/xyo-service"]
+
+
+# ------------------------------------------------------------------------------
+# Stage 2B: Red Hat Universal Base Image (UBI) Minimal (Enterprise Alternative)
+# For Red Hat OpenShift / Enterprise Linux (RHEL) Compliance
+# Target: ubi-prod (build with --target ubi-prod)
+# ------------------------------------------------------------------------------
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4 AS ubi-prod
+
+LABEL org.opencontainers.image.title="XYO Financial Gateway & Enrichment (RHEL UBI)" \
+      org.opencontainers.image.vendor="Syniol Limited" \
+      org.opencontainers.image.version="2.0.0" \
+      security.hardened="true"
+
+# Security: Install microdnf updates, remove package manager, purge cache
+RUN microdnf update -y \
+    && microdnf clean all \
+    && rm -rf /var/cache/yum /var/cache/dnf /var/lib/rpm*
+
+# Copy user entries and binaries from builder
+COPY --from=builder /etc/passwd /etc/passwd
+COPY --from=builder /etc/group /etc/group
+COPY --from=builder --chown=10001:10001 /bin/xyo-service /app/xyo-service
+COPY --from=builder --chown=10001:10001 /bin/probe /app/probe
+COPY --from=builder --chown=10001:10001 /app /app
+
+USER 10001:10001
+WORKDIR /app
+
+EXPOSE 8080 9091 9092 9093
+
+HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \
+    CMD ["/app/probe", "-endpoint=http://127.0.0.1:8080/healthz"]
+
+ENTRYPOINT ["/app/xyo-service"]

@@ -1,0 +1,78 @@
+===============================================================================
+  XYO FINANCIAL - ENTERPRISE AI PAYMENT TRANSACTION ENRICHMENT APPLIANCE
+===============================================================================
+
+Thank you for installing {{ .Chart.Name }} (Version: {{ .Chart.Version }}, AppVersion: {{ .Chart.AppVersion }}).
+
+Your release is named "{{ .Release.Name }}" in namespace "{{ .Release.Namespace }}".
+
+-------------------------------------------------------------------------------
+1. VERIFY POD STATUS
+-------------------------------------------------------------------------------
+Check that all appliance microservices are running:
+
+  kubectl get pods -n {{ .Release.Namespace }} -l app.kubernetes.io/instance={{ .Release.Name }}
+
+-------------------------------------------------------------------------------
+2. ACCESSING THE GATEWAY API
+-------------------------------------------------------------------------------
+{{- if .Values.ingress.enabled }}
+The gateway is exposed via Ingress at:
+{{- range .Values.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ .host }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- else if contains "NodePort" .Values.gateway.service.type }}
+Get the NodePort URL by running:
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "xyo-appliance.fullname" . }}-gateway)
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "http://$NODE_IP:$NODE_PORT"
+{{- else if contains "LoadBalancer" .Values.gateway.service.type }}
+Get the LoadBalancer IP/Hostname by running:
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch status with: kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "xyo-appliance.fullname" . }}-gateway
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "xyo-appliance.fullname" . }}-gateway --template "{{"{{"}} range (index .status.loadBalancer.ingress 0) {{"}}"}} {{"{{"}} . {{"}}"}} {{"{{"}} end {{"}}"}}")
+  echo "http://$SERVICE_IP:{{ .Values.gateway.service.port }}"
+{{- else if contains "ClusterIP" .Values.gateway.service.type }}
+To access the Gateway API from your local machine, run port-forwarding:
+
+  kubectl port-forward svc/{{ include "xyo-appliance.fullname" . }}-gateway 8080:{{ .Values.gateway.service.port }} -n {{ .Release.Namespace }}
+
+  The Gateway API will then be accessible at:
+  http://localhost:8080
+{{- end }}
+
+-------------------------------------------------------------------------------
+3. TEST ENRICHMENT REQUEST
+-------------------------------------------------------------------------------
+Run the following curl command to test transaction enrichment:
+
+{{- if .Values.ingress.enabled }}
+  curl -X POST "https://{{ (index .Values.ingress.hosts 0).host }}/v1/enrich" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "description": "AMZN Mktp US*Amzn.com/bill WA",
+      "countryCode": "US"
+    }'
+{{- else }}
+  curl -X POST http://localhost:8080/v1/enrich \
+    -H "Content-Type: application/json" \
+    -d '{
+      "description": "AMZN Mktp US*Amzn.com/bill WA",
+      "countryCode": "US"
+    }'
+{{- end }}
+
+-------------------------------------------------------------------------------
+4. HEALTH CHECKS & DIAGNOSTICS
+-------------------------------------------------------------------------------
+Liveness & Readiness endpoints:
+  - Liveness probe:   GET /healthz
+  - Readiness probe:  GET /readyz
+
+To view Gateway logs:
+  kubectl logs -n {{ .Release.Namespace }} -l app.kubernetes.io/component=gateway -f
+
+For support and appliance activation assistance, contact: support@syniol.com
+===============================================================================

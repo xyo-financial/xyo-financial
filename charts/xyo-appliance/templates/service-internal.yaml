@@ -1,0 +1,83 @@
+{{- if .Values.enrichment.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "xyo-appliance.fullname" . }}-enrichment
+  labels:
+    {{- include "xyo-appliance.componentLabels" (dict "root" . "component" "enrichment") | nindent 4 }}
+  {{- with .Values.enrichment.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.enrichment.service.type | default "ClusterIP" }}
+  ports:
+    - port: {{ .Values.enrichment.service.port }}
+      targetPort: {{ .Values.enrichment.service.targetPort | default 9091 }}
+      protocol: TCP
+      name: grpc
+  selector:
+    {{- include "xyo-appliance.componentSelectorLabels" (dict "root" . "component" "enrichment") | nindent 4 }}
+---
+{{- end }}
+{{- if .Values.oracle.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "xyo-appliance.fullname" . }}-oracle
+  labels:
+    {{- include "xyo-appliance.componentLabels" (dict "root" . "component" "oracle") | nindent 4 }}
+  {{- with .Values.oracle.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.oracle.service.type | default "ClusterIP" }}
+  ports:
+    - port: {{ .Values.oracle.service.port }}
+      targetPort: {{ .Values.oracle.service.targetPort | default 9092 }}
+      protocol: TCP
+      name: grpc
+  selector:
+    {{- include "xyo-appliance.componentSelectorLabels" (dict "root" . "component" "oracle") | nindent 4 }}
+---
+{{- end }}
+{{- if .Values.yoda.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "xyo-appliance.fullname" . }}-yoda
+  labels:
+    {{- include "xyo-appliance.componentLabels" (dict "root" . "component" "yoda") | nindent 4 }}
+  {{- with .Values.yoda.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.yoda.service.type | default "ClusterIP" }}
+  ports:
+    - port: {{ .Values.yoda.service.port }}
+      targetPort: {{ .Values.yoda.service.targetPort | default 9093 }}
+      protocol: TCP
+      name: grpc
+  selector:
+    {{- include "xyo-appliance.componentSelectorLabels" (dict "root" . "component" "yoda") | nindent 4 }}
+---
+{{- end }}
+{{- if and .Values.postgresql.enabled (not .Values.postgresql.external.enabled) }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "xyo-appliance.fullname" . }}-postgres
+  labels:
+    {{- include "xyo-appliance.componentLabels" (dict "root" . "component" "postgres") | nindent 4 }}
+spec:
+  type: {{ .Values.postgresql.service.type | default "ClusterIP" }}
+  ports:
+    - port: {{ .Values.postgresql.service.port | default 5432 }}
+      targetPort: {{ .Values.postgresql.service.targetPort | default 5432 }}
+      protocol: TCP
+      name: postgresql
+  selector:
+    {{- include "xyo-appliance.componentSelectorLabels" (dict "root" . "component" "postgres") | nindent 4 }}
+{{- end }}

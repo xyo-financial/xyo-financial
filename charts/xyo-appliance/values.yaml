@@ -1,0 +1,397 @@
+# Default values for xyo-appliance.
+# Enterprise Air-Gapped AI Payment Transaction Enrichment Appliance for Kubernetes & OpenShift
+
+## Global configuration settings applicable across all components
+global:
+  # Base container registry (e.g. cr.syniol.com or your internal private air-gapped registry mirror)
+  imageRegistry: "cr.syniol.com"
+  
+  # Image pull secrets for accessing private registries
+  imagePullSecrets:
+    - name: "syniol-registry-secret"
+  
+  # XYO Enterprise Appliance Activation License Key
+  # If licenseKey is set, a Secret will automatically be created unless existingLicenseSecret is specified.
+  licenseKey: "XYO-ENT-PROD-LIVE-KEY"
+  
+  # Reference an existing Secret containing the license key instead of managing it through Helm values
+  existingLicenseSecret: ""
+  licenseSecretKey: "license-key"
+
+## Pod Security Context applied across all pods
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+  seccompProfile:
+    type: RuntimeDefault
+
+## Container Security Context applied to all application containers
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  capabilities:
+    drop:
+      - ALL
+
+## -----------------------------------------------------------------------------------
+## Gateway Service (Public / Client-Facing API Endpoint)
+## -----------------------------------------------------------------------------------
+gateway:
+  enabled: true
+  replicaCount: 2
+  
+  image:
+    registry: ""
+    repository: "xyo/gateway"
+    tag: "v2.0.0"
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
+    annotations: {}
+
+  env:
+    LOG_LEVEL: "info"
+    PORT: "8080"
+
+  probes:
+    liveness:
+      enabled: true
+      path: /healthz
+      port: 8080
+      initialDelaySeconds: 15
+      periodSeconds: 20
+      timeoutSeconds: 5
+      failureThreshold: 3
+    readiness:
+      enabled: true
+      path: /readyz
+      port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      timeoutSeconds: 3
+      failureThreshold: 3
+    startup:
+      enabled: true
+      path: /healthz
+      port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      failureThreshold: 30
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+## -----------------------------------------------------------------------------------
+## Enrichment Service (Core Orchestrator & Rule Coordinator)
+## -----------------------------------------------------------------------------------
+enrichment:
+  enabled: true
+  replicaCount: 2
+
+  image:
+    registry: ""
+    repository: "xyo/enrichment"
+    tag: "v2.0.0"
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 9091
+    targetPort: 9091
+    annotations: {}
+
+  env:
+    LOG_LEVEL: "info"
+
+  probes:
+    liveness:
+      enabled: true
+      tcpSocket:
+        port: 9091
+      initialDelaySeconds: 15
+      periodSeconds: 20
+      timeoutSeconds: 5
+      failureThreshold: 3
+    readiness:
+      enabled: true
+      tcpSocket:
+        port: 9091
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      timeoutSeconds: 3
+      failureThreshold: 3
+    startup:
+      enabled: true
+      tcpSocket:
+        port: 9091
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      failureThreshold: 30
+
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+## -----------------------------------------------------------------------------------
+## Oracle Service (Neural Categorization & Deep Transaction NLP Engine)
+## -----------------------------------------------------------------------------------
+oracle:
+  enabled: true
+  replicaCount: 1
+
+  image:
+    registry: ""
+    repository: "xyo/oracle"
+    tag: "v2.0.0"
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 9092
+    targetPort: 9092
+    annotations: {}
+
+  env:
+    LOG_LEVEL: "info"
+
+  probes:
+    liveness:
+      enabled: true
+      tcpSocket:
+        port: 9092
+      initialDelaySeconds: 15
+      periodSeconds: 20
+      timeoutSeconds: 5
+      failureThreshold: 3
+    readiness:
+      enabled: true
+      tcpSocket:
+        port: 9092
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      timeoutSeconds: 3
+      failureThreshold: 3
+
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+## -----------------------------------------------------------------------------------
+## Yoda Service (Deterministic Heuristics, Merchant Disambiguation & Pattern Engine)
+## -----------------------------------------------------------------------------------
+yoda:
+  enabled: true
+  replicaCount: 1
+
+  image:
+    registry: ""
+    repository: "xyo/yoda"
+    tag: "v2.0.0"
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 9093
+    targetPort: 9093
+    annotations: {}
+
+  env:
+    LOG_LEVEL: "info"
+
+  probes:
+    liveness:
+      enabled: true
+      tcpSocket:
+        port: 9093
+      initialDelaySeconds: 15
+      periodSeconds: 20
+      timeoutSeconds: 5
+      failureThreshold: 3
+    readiness:
+      enabled: true
+      tcpSocket:
+        port: 9093
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      timeoutSeconds: 3
+      failureThreshold: 3
+
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+## -----------------------------------------------------------------------------------
+## Persistence (Shared Logo Storage for Gateway and Enrichment)
+## -----------------------------------------------------------------------------------
+persistence:
+  logos:
+    enabled: true
+    mountPath: /var/lib/xyo/logos
+    accessModes:
+      - ReadWriteMany
+    size: 10Gi
+    # StorageClass name. Recommended: high-IOPS SSD class supporting RWX (e.g., efs-sc, managed-nfs-storage, ocs-storagecluster-cephfs)
+    storageClass: ""
+    # If using an existing PVC, set existingClaim name
+    existingClaim: ""
+    annotations: {}
+
+## -----------------------------------------------------------------------------------
+## PostgreSQL Database Configuration (Embedded appliance DB or External enterprise DB)
+## -----------------------------------------------------------------------------------
+postgresql:
+  # Deploy internal PostgreSQL instance (suitable for standalone/poc/air-gap deployments)
+  enabled: true
+  
+  image:
+    registry: "docker.io"
+    repository: "postgres"
+    tag: "15-alpine"
+    pullPolicy: IfNotPresent
+
+  auth:
+    database: "xyo"
+    username: "xyo_user"
+    password: "xyo_secure_pass"
+    existingSecret: ""
+    secretKeys:
+      password: "postgres-password"
+
+  service:
+    type: ClusterIP
+    port: 5432
+    targetPort: 5432
+
+  persistence:
+    enabled: false
+    storageClass: ""
+    size: 20Gi
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+
+  # External Enterprise Database (AWS RDS Aurora, GCP Cloud SQL, Azure Database for PG, etc.)
+  # When external.enabled is true, internal postgresql deployment is skipped and this DSN is used.
+  external:
+    enabled: false
+    dsn: "" # e.g. "postgres://xyo_user:my_secret_pass@pg.corp.internal:5432/xyo?sslmode=require"
+    existingSecret: ""
+    secretKey: "dsn"
+
+## -----------------------------------------------------------------------------------
+## Ingress Configuration
+## -----------------------------------------------------------------------------------
+ingress:
+  enabled: false
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "16m"
+  hosts:
+    - host: "xyo-appliance.internal.bank.com"
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: "xyo-appliance-tls"
+      hosts:
+        - "xyo-appliance.internal.bank.com"
+
+## -----------------------------------------------------------------------------------
+## Horizontal Pod Autoscaler (HPA)
+## -----------------------------------------------------------------------------------
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 75
+  targetMemoryUtilizationPercentage: 80
+  gateway:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+  enrichment:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+
+## -----------------------------------------------------------------------------------
+## Prometheus Metrics & Monitoring (ServiceMonitor CRD)
+## -----------------------------------------------------------------------------------
+metrics:
+  enabled: false
+  serviceMonitor:
+    enabled: false
+    namespace: ""
+    interval: "30s"
+    scrapeTimeout: "10s"
+    telemetryPath: "/metrics"
+    labels:
+      release: "prometheus-stack"
+    metricRelabelings: []
+    relabelings: []
+
+## -----------------------------------------------------------------------------------
+## Additional Pod disruption budgets, ServiceAccount, and OpenShift settings
+## -----------------------------------------------------------------------------------
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+  # maxUnavailable: 1
+
+openshift:
+  securityContextConstraints:
+    enabled: false
+    name: "nonroot"

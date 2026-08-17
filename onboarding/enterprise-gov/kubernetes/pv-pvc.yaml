@@ -1,13 +1,53 @@
+# ==============================================================================
+# XYO Enrichment Platform - Persistent Storage Manifests
+# Tier-1 Enterprise & High-Assurance Deployment
+# Storage Topology:
+# 1. xyo-logos-pvc: Shared high-IOPS ReadWriteMany (RWX) volume for logo caching
+# 2. xyo-postgres-pvc: Dedicated high-IOPS ReadWriteOnce (RWO) volume for database
+# ==============================================================================
+
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: xyo-logos-pvc
   namespace: xyo
+  labels:
+    app.kubernetes.io/name: xyo-logos-storage
+    app.kubernetes.io/part-of: xyo-appliance
+    app.kubernetes.io/component: storage
+    app.kubernetes.io/managed-by: manual
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
       storage: 10Gi
-  # It is recommended to use an SSD-backed StorageClass (e.g., gp3, premium-rwo, or managed-csi)
-  # storageClassName: gp3-ssd
+  # Recommended StorageClass for multi-pod read/write logo sharing:
+  # - AWS: efs-sc / aws-efs-csi
+  # - Azure: azurefile-csi-premium / azurefile-premium
+  # - GCP: filestore-csi
+  # - OpenShift / On-Prem: ocs-storagecluster-cephfs / nfs-client
+  # storageClassName: efs-sc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: xyo-postgres-pvc
+  namespace: xyo
+  labels:
+    app.kubernetes.io/name: xyo-postgres-storage
+    app.kubernetes.io/part-of: xyo-appliance
+    app.kubernetes.io/component: database-storage
+    app.kubernetes.io/managed-by: manual
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  # Recommended StorageClass for low-latency transactional database:
+  # - AWS: gp3 / io2 (ebs.csi.aws.com)
+  # - Azure: managed-csi-premium
+  # - GCP: premium-rwo (pd-ssd)
+  # - OpenShift / On-Prem: ocs-storagecluster-ceph-rbd / local-storage
+  # storageClassName: gp3
