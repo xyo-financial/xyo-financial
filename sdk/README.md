@@ -14,14 +14,13 @@ The **XYO Financial SDK Suite** provides official, production-grade client libra
 
 | Language | Repository | Package / Module Name | Generated Engine | Status |
 |---|---|---|---|---|
-| **Go (Golang)** | [`xyo-financial/sdk-go`](https://github.com/xyo-financial/sdk-go) | `github.com/xyo-financial/sdk-go/v2` | `go` (`openapi` package) | **Stable** |
-| **Node.js / TypeScript** | [`xyo-financial/sdk-node`](https://github.com/xyo-financial/sdk-node) | `@xyo-financial/sdk` | `typescript-fetch` | **Stable** |
-| **Java** | [`xyo-financial/sdk-java`](https://github.com/xyo-financial/sdk-java) | `com.xyo:xyo-sdk` | `java` (Native library) | **Stable** |
-| **Rust** | [`xyo-financial/sdk-rust`](https://github.com/xyo-financial/sdk-rust) | `xyo-financial` | `rust` (`openapi-client`) | **Stable** |
 | **C++ (C++17)** | [`xyo-financial/sdk-cpp`](https://github.com/xyo-financial/sdk-cpp) | `xyo-sdk` | `cpp-restsdk` | **Stable** |
-| **PHP (PHP 8.2+)** | [`xyo-financial/sdk-php`](https://github.com/xyo-financial/sdk-php) | `xyo-financial/sdk-php` | `php` (`lib/`) | **Stable** |
-| **Python (3.9+)** | [`xyo-financial/sdk-python`](https://github.com/xyo-financial/sdk-python) | `xyo-sdk` | `python` | *Upcoming* |
-| **.NET / C# (.NET 8+)** | [`xyo-financial/sdk-dotnet`](https://github.com/xyo-financial/sdk-dotnet) | `Xyo.Sdk` | `csharp-netcore` | *Upcoming* |
+| **Rust** | [`xyo-financial/sdk-rust`](https://github.com/xyo-financial/sdk-rust) | `xyo-sdk` | `rust` (`openapi-client`) | **Stable** |
+| **Go (Golang)** | [`xyo-financial/sdk-go`](https://github.com/xyo-financial/sdk-go) | `github.com/xyo-financial/sdk-go/v2` | `go` (`openapi` package) | **Stable** |
+| **Java (Java 17+)** | [`xyo-financial/sdk-java`](https://github.com/xyo-financial/sdk-java) | `com.xyo:xyo-sdk` | `java` (Native library) | **Stable** |
+| **.NET / C# (.NET 8+)** | [`xyo-financial/sdk-dotnet`](https://github.com/xyo-financial/sdk-dotnet) | `Xyo.Sdk` | `csharp-netcore` | **Stable** |
+| **Python (3.9+)** | [`xyo-financial/sdk-python`](https://github.com/xyo-financial/sdk-python) | `xyo-sdk` | `python` | **Stable** |
+| **Node.js / TypeScript** | [`xyo-financial/sdk-node`](https://github.com/xyo-financial/sdk-node) | `@xyo-financial/sdk` | `typescript-fetch` | **Stable** |
 
 ---
 
@@ -82,12 +81,13 @@ jobs:
     strategy:
       matrix:
         repo:
-          - xyo-financial/sdk-go
-          - xyo-financial/sdk-node
-          - xyo-financial/sdk-java
-          - xyo-financial/sdk-php
           - xyo-financial/sdk-cpp
           - xyo-financial/sdk-rust
+          - xyo-financial/sdk-go
+          - xyo-financial/sdk-java
+          - xyo-financial/sdk-dotnet
+          - xyo-financial/sdk-python
+          - xyo-financial/sdk-node
       fail-fast: false
 
     steps:
@@ -227,7 +227,7 @@ To regenerate the client library locally when working in a development workspace
 
 1. **Ensure Prerequisites:**
    - Node.js 18+ with `npx`
-   - Language toolchain (Go 1.18+, Node 20+, Rust 1.70+, Java 17+, PHP 8.2+, C++17)
+   - Language toolchain (Go 1.22+, Node 20+, Rust 1.75+, Java 17+, C++17, Python 3.9+, .NET 8+)
 
 2. **Execute Local Generator (From SDK Root):**
    ```bash

@@ -312,15 +312,31 @@ Syniol provides official, type-safe SDK client libraries to simplify integration
   EnrichmentResponse res = client.enrichTransaction(new EnrichmentRequest("SPOTIFY PREMIUM", "SE"));
   ```
 
-### 🐘 PHP SDK
-- **Package**: `xyo/sdk` (on [packagist.org](https://packagist.org/packages/xyo/sdk))
+### 🐍 Python SDK
+- **Package**: `xyo-sdk` (on [pypi.org](https://pypi.org/project/xyo-sdk/))
   ```bash
-  composer require xyo/sdk
+  pip install xyo-sdk
   ```
-  ```php
-  $config = new ClientConfig('your-api-token', null, 'http://localhost:8080');
-  $client = new Client($config);
-  $response = $client->enrichTransaction('UBER TRIP HELP.UBER.COM', 'US');
+  ```python
+  from xyo import Client, ClientConfig
+
+  config = ClientConfig(api_key="your-api-key", base_url="http://localhost:8080")
+  with Client(config=config) as client:
+      response = client.enrich_transaction("UBER TRIP HELP.UBER.COM", "US")
+      print(f"Merchant: {response.merchant} -> {response.categories}")
+  ```
+
+### 🔷 .NET / C# SDK
+- **Package**: `Xyo.Sdk` (on [nuget.org](https://www.nuget.org/packages/Xyo.Sdk))
+  ```bash
+  dotnet add package Xyo.Sdk
+  ```
+  ```csharp
+  using Xyo.Sdk;
+
+  var config = new ClientConfig { ApiKey = "your-api-key", BaseUrl = "http://localhost:8080" };
+  using var client = new XyoClient(config);
+  var response = await client.EnrichTransactionAsync(new EnrichmentRequest("STARBUCKS STORE", "US"));
   ```
 
 ---
