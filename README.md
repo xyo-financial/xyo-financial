@@ -67,28 +67,24 @@ Every official SDK provides direct, type-safe access to XYO's core enrichment en
 Our OpenAPI specifications serve as the single source of truth for the entire platform:
 
 * [**Specs Home**](https://github.com/xyo-financial/specs)
-  The home to all types of API specifications and tooling.
+<br/>The home to all types of API specifications and tooling.
 * [**OpenAPI 3.0.3 Specification**](https://github.com/xyo-financial/specs/blob/main/openapi.yml)
-  Hardened schema with rich banking transaction fixtures (Costa, Starbucks, Uber, TfL) and strict RFC 7807 problem details.
+<br/>Hardened schema with rich banking transaction fixtures (Costa, Starbucks, Uber, TfL) and strict RFC 7807 problem details.
 * [**Postman Collection**](https://github.com/xyo-financial/specs/blob/main/postman.json)
-  Production-ready collection with pre-configured Bearer auth and payload templates.
+<br/>Production-ready collection with pre-configured Bearer auth and payload templates.
 
 ---
 
 ## 🔒 Security & Compliance
 
 * **Encryption**
-
-All data in transit is enforced via TLS 1.3; data at rest is encrypted using AES-256-GCM.
+<br/>All data in transit is enforced via TLS 1.3; data at rest is encrypted using AES-256-GCM.
 * **Authentication**
-
-  Bearer Token authentication via cryptographically provisioned API keys (`Authorization: Bearer <token>`).
+<br/>Bearer Token authentication via cryptographically provisioned API keys (`Authorization: Bearer <token>`).
 * **Error Semantics**
-
-  Standardized RFC 7807 Problem Details (`application/problem+json`) across all 4xx/5xx status codes.
+<br/>Standardized RFC 7807 Problem Details (`application/problem+json`) across all 4xx/5xx status codes.
 * **Compliance**
-
-  Zero-log transaction policies are available for enterprise topologies to guarantee GDPR and banking privacy compliance.
+<br/>Zero-log transaction policies are available for enterprise topologies to guarantee GDPR and banking privacy compliance.
 
 ---
 
