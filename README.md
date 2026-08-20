@@ -53,13 +53,15 @@ Every official SDK provides direct, type-safe access to XYO's core enrichment en
 
 1. **Real-Time Single Enrichment (`enrichTransaction`)**
 
-  Synchronous enrichment for real-time payment authorization streams. Returns merchant categorization, brand logo, confidence score, and geolocation.
+    Synchronous enrichment for real-time payment authorization streams. Returns merchant categorization, brand logo, confidence score, and geolocation.
 
 2. **Asynchronous Bulk Enrichment (`enrichTransactions`)**
 
-  High-throughput batch submission for settlement files and nightly ledger processing. Returns a tracked batch ID and downloadable archive link.
+    High-throughput batch submission for settlement files and nightly ledger processing. Returns a tracked batch ID and downloadable archive link.
 
-3. **Batch Status Polling (`getEnrichmentStatus`)**: Deterministic job status tracking (`READY`, `PENDING`, `FAILED`) to retrieve completed bulk enrichment archives.
+3. **Batch Status Polling (`getEnrichmentStatus`)**
+
+    Deterministic job status tracking (`READY`, `PENDING`, `FAILED`) to retrieve completed bulk enrichment archives.
 
 ---
 
