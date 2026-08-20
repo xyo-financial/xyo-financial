@@ -52,8 +52,7 @@ All XYO client libraries are generated deterministically from our central OpenAP
 Every official SDK provides direct, type-safe access to XYO's core enrichment engine through three canonical operations:
 
 1. **Real-Time Single Enrichment (`enrichTransaction`)**
-
-    Synchronous enrichment for real-time payment authorization streams. Returns merchant categorization, brand logo, confidence score, and geolocation.
+<br/>Synchronous enrichment for real-time payment authorization streams. Returns merchant categorization, brand logo, confidence score, and geolocation.
 
 2. **Asynchronous Bulk Enrichment (`enrichTransactions`)**
 
