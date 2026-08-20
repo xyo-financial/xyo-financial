@@ -40,5 +40,5 @@ Built for institutions operating under the most rigorous regulatory frameworks (
 ---
 
 ### 🔐 Compliance & Governance
-Copyright &copy; Syniol Limited. All rights reserved.  
-Distributed under the **BSD-3-Clause License**. Use of this documentation and related infrastructure is subject to the XYO Financial Enterprise Master Services Agreement (MSA).
+Copyright &copy; 2026 Syniol Limited. All rights reserved.  
+Distributed under the **Apache License, Version 2.0** (Client SDKs) and **XYO Financial Enterprise Master Services Agreement (MSA)**.

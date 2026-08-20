@@ -7,7 +7,7 @@ authors:
     city: "London"
     country: "GB"
     website: "https://xyo.financial"
-repository-code: "https://github.com/xyo-financial/xyo-financial"
+repository-code: "https://github.com/xyo-financial/xyo-developer"
 url: "https://xyo.financial"
 abstract: >-
   XYO Financial is an institutional-grade, high-throughput financial data
@@ -22,6 +22,6 @@ keywords:
   - "high-throughput-batch"
   - "air-gapped"
   - "sovereign-cloud"
-license: "BSD-3-Clause"
+license: "Apache-2.0"
 version: "2.0.0"
-date-released: "2024-01-01"
+date-released: "2026-01-01"
