@@ -10,19 +10,19 @@ The Kubernetes deployment provides horizontal scalability, zero-downtime rolling
 
 ```mermaid
 flowchart TD
-    subgraph Ingress / Client Network
-        Ingress[Ingress Controller / OpenShift Route / AWS ALB]
+    subgraph IngressNet ["Ingress / Client Network"]
+        Ingress["Ingress Controller / OpenShift Route / AWS ALB"]
     end
 
-    subgraph Kubernetes Namespace: xyo [Namespace: xyo (PSS Restricted)]
-        GW[xyo-gateway<br/>Replicas: 2 | Port 8080]
-        ENR[xyo-enrichment<br/>Replicas: 2 | Port 9091]
-        ORA[xyo-oracle<br/>Replicas: 1 | Port 9092]
-        YOD[xyo-yoda<br/>Replicas: 1 | Port 9093]
-        PG[(xyo-postgres<br/>Replicas: 1 | Port 5432)]
+    subgraph K8sNamespace ["Kubernetes Namespace: xyo (PSS Restricted)"]
+        GW["xyo-gateway<br/>Replicas: 2 | Port 8080"]
+        ENR["xyo-enrichment<br/>Replicas: 2 | Port 9091"]
+        ORA["xyo-oracle<br/>Replicas: 1 | Port 9092"]
+        YOD["xyo-yoda<br/>Replicas: 1 | Port 9093"]
+        PG[("xyo-postgres<br/>Replicas: 1 | Port 5432")]
         
-        PVC_LOGOS[(xyo-logos-pvc<br/>ReadWriteMany: 10Gi)]
-        PVC_PG[(xyo-postgres-pvc<br/>ReadWriteOnce: 50Gi)]
+        PVC_LOGOS[("xyo-logos-pvc<br/>ReadWriteMany: 10Gi")]
+        PVC_PG[("xyo-postgres-pvc<br/>ReadWriteOnce: 50Gi")]
     end
 
     Ingress -->|HTTP / TLS: 8080| GW
