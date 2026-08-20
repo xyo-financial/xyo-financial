@@ -32,11 +32,11 @@ The containerized suite runs as an isolated microservice mesh inside a private b
 
 ```mermaid
 flowchart TD
-    subgraph Host Network Ingress
+    subgraph IngressNet ["Host Network Ingress"]
         Client["Bank Ingress / Core Banking Systems"]
     end
 
-    subgraph "Docker Secure Network (xyo-network) [Non-Root UID 10001]"
+    subgraph DockerNet ["Docker Secure Network (xyo-network) (Non-Root UID 10001)"]
         Gateway["xyo-gateway:v2.0.0<br/>• Read-Only Rootfs<br/>• Drop All Caps<br/>• Port 8080"]
         Enrichment["xyo-enrichment:v2.0.0<br/>• Read-Only Rootfs<br/>• Port 9091"]
         Oracle["xyo-oracle:v2.0.0<br/>• Deterministic Heuristics<br/>• Port 9092"]
@@ -44,7 +44,7 @@ flowchart TD
         DB[("xyo-postgres<br/>• Non-Root UID 70<br/>• Port 5432")]
     end
 
-    subgraph Storage
+    subgraph StorageNet ["Persistent Storage"]
         SSD[("Host NVMe SSD<br/>/var/lib/xyo/logos")]
     end
 

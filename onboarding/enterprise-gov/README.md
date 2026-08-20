@@ -24,25 +24,25 @@ Syniol provides three production-grade deployment models tailored to institution
 
 ```mermaid
 graph LR
-    subgraph Option 1: Cloud-Native GitOps
-        A[Helm v3 Chart<br/><code>charts/xyo-appliance</code>]
-        A --> A1[ArgoCD / Flux CD]
-        A --> A2[Auto-scaling HPA]
-        A --> A3[Ingress / Vault]
+    subgraph Option1 ["Option 1: Cloud-Native GitOps"]
+        A["Helm v3 Chart<br/>charts/xyo-appliance"]
+        A --> A1["ArgoCD / Flux CD"]
+        A --> A2["Auto-scaling HPA"]
+        A --> A3["Ingress / Vault"]
     end
 
-    subgraph Option 2: Pure Air-Gapped K8s
-        B[Static K8s Manifests<br/><code>kubernetes/</code>]
-        B --> B1[PSS Restricted]
-        B --> B2[OpenShift restricted-v2]
-        B --> B3[Zero External Tools]
+    subgraph Option2 ["Option 2: Pure Air-Gapped K8s"]
+        B["Static K8s Manifests<br/>kubernetes/"]
+        B --> B1["PSS Restricted"]
+        B --> B2["OpenShift restricted-v2"]
+        B --> B3["Zero External Tools"]
     end
 
-    subgraph Option 3: Hardened Host Appliance
-        C[Docker Compose<br/><code>docker/</code>]
-        C --> C1[Distroless / RHEL UBI]
-        C --> C2[Single Host / VM]
-        C --> C3[Air-Gapped Compose]
+    subgraph Option3 ["Option 3: Hardened Host Appliance"]
+        C["Docker Compose<br/>docker/"]
+        C --> C1["Distroless / RHEL UBI"]
+        C --> C2["Single Host / VM"]
+        C --> C3["Air-Gapped Compose"]
     end
 ```
 
@@ -111,17 +111,17 @@ The XYO Enrichment Platform relies on microservices communicating securely insid
 
 ```mermaid
 flowchart TD
-    subgraph Public / Client Network
-        Client[Client App / Banking Switch / SDK]
+    subgraph PublicNet ["Public / Client Network"]
+        Client["Client App / Banking Switch / SDK"]
     end
 
-    subgraph Secure Private Subnet (Namespace: xyo)
-        Gateway[XYO Gateway<br/>Port 8080 HTTP]
-        Enrichment[XYO Enrichment<br/>Port 9091 gRPC]
-        Oracle[XYO Oracle<br/>Port 9092 gRPC]
-        Yoda[XYO Yoda<br/>Port 9093 gRPC]
-        DB[(PostgreSQL<br/>Port 5432 TCP)]
-        SSD[(SSD Volume: Logos<br/>ReadWriteMany)]
+    subgraph PrivateSubnet ["Secure Private Subnet (Namespace: xyo)"]
+        Gateway["XYO Gateway<br/>Port 8080 HTTP"]
+        Enrichment["XYO Enrichment<br/>Port 9091 gRPC"]
+        Oracle["XYO Oracle<br/>Port 9092 gRPC"]
+        Yoda["XYO Yoda<br/>Port 9093 gRPC"]
+        DB[("PostgreSQL<br/>Port 5432 TCP")]
+        SSD[("SSD Volume: Logos<br/>ReadWriteMany")]
     end
 
     Client -->|HTTP: 8080| Gateway
