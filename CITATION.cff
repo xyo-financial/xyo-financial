@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+title: "XYO Financial: High-Throughput AI Enrichment Platform"
+message: "If you reference this architecture, platform, or our SDKs in academic or institutional research, please cite it as below."
+type: software
+authors:
+  - name: "Syniol Limited"
+    city: "London"
+    country: "GB"
+    website: "https://xyo.financial"
+repository-code: "https://github.com/xyo-financial/xyo-financial"
+url: "https://xyo.financial"
+abstract: >-
+  XYO Financial is an institutional-grade, high-throughput financial data
+  enrichment engine. It leverages AI models (via C++, Rust, Go, Java, .NET)
+  to transform raw transaction streams into clean merchant profiles,
+  categorizations, and geolocated metadata, deploying across SaaS, hybrid,
+  and air-gapped sovereign infrastructure.
+keywords:
+  - "financial-enrichment"
+  - "ai-inference"
+  - "fintech"
+  - "high-throughput-batch"
+  - "air-gapped"
+  - "sovereign-cloud"
+license: "BSD-3-Clause"
+version: "2.0.0"
+date-released: "2024-01-01"
