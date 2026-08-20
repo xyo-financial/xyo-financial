@@ -47,7 +47,7 @@ graph LR
 ```
 
 ### 1. ☸️ Helm v3 Production Deployment (Recommended for Cloud & GitOps)
-- **Path**: [`charts/xyo-appliance`](file:///Users/hadi/dev/start-ups/xyo/sdks/xyo-developer/charts/xyo-appliance)
+- **Path**: [`charts/xyo-appliance`](../../charts/xyo-appliance)
 - **Use Case**: Production Kubernetes (EKS, GKE, AKS, OpenShift) utilizing automated GitOps pipelines (ArgoCD, Flux, GitLab CI).
 - **Features**: Parameterized values, automated Horizontal Pod Autoscaling (HPA), native Ingress/mTLS routing, HashiCorp Vault / External Secrets Operator integration, and Prometheus ServiceMonitors.
 - **Quickstart**:
@@ -58,7 +58,7 @@ graph LR
   ```
 
 ### 2. 🛡️ Pure Air-Gapped Kubernetes Manifests (Declarative K8s / OpenShift)
-- **Path**: [`kubernetes/`](file:///Users/hadi/dev/start-ups/xyo/sdks/xyo-developer/onboarding/enterprise-gov/kubernetes) | [Read Kubernetes Guide](file:///Users/hadi/dev/start-ups/xyo/sdks/xyo-developer/onboarding/enterprise-gov/kubernetes/README.md)
+- **Path**: [`kubernetes/`](./kubernetes) | [Read Kubernetes Guide](./kubernetes/README.md)
 - **Use Case**: Highly secure, air-gapped, or regulated clusters where package managers (Helm) and external controllers are prohibited.
 - **Features**: 100% declarative YAML manifests adhering strictly to Kubernetes Pod Security Standards (`PSS Restricted`) and Red Hat OpenShift (`restricted-v2` SCC).
 - **Quickstart**:
@@ -73,9 +73,9 @@ graph LR
   ```
 
 ### 3. 🐳 Hardened Docker Compose Appliance (Single-Node / On-Prem VM)
-- **Path**: [`docker/`](file:///Users/hadi/dev/start-ups/xyo/sdks/xyo-developer/onboarding/enterprise-gov/docker) | [Read Docker Guide](file:///Users/hadi/dev/start-ups/xyo/sdks/xyo-developer/onboarding/enterprise-gov/docker/README.md)
+- **Path**: [`docker/`](./docker) | [Read Docker Guide](./docker/README.md)
 - **Use Case**: Turnkey appliance on dedicated bare-metal Linux servers or virtual machines (VMware ESXi, Nutanix, KVM).
-- **Features**: Pre-configured multi-container stack with isolated bridge networking, CPU/RAM reservations, and multi-stage hardened Google Distroless / Red Hat UBI minimal builds ([`Dockerfile.hardened`](file:///Users/hadi/dev/start-ups/xyo/sdks/xyo-developer/onboarding/enterprise-gov/docker/Dockerfile.hardened)).
+- **Features**: Pre-configured multi-container stack with isolated bridge networking, CPU/RAM reservations, and multi-stage hardened Google Distroless / Red Hat UBI minimal builds ([`Dockerfile.hardened`](./docker/Dockerfile.hardened)).
 - **Quickstart**:
   ```bash
   cd docker
@@ -96,8 +96,12 @@ The platform operates as a modular, decoupled microservice suite:
 - **XYO Enrichment**: Core orchestrator and internal `gRPC/RPC` server coordinating inference pipelines across downstream pattern matchers and AI models.
 - **XYO Oracle**: High-speed internal pattern matcher database and deterministic rules engine (*"The great Oracle knows everything"*).
 - **XYO Yoda**: Machine learning inference service for high-dimensional semantic categorization and counterparty entity resolution (*"Yoda is wise"*).
-- **PostgreSQL**: Transactional query cache and audit persistence backend.
+- **PostgreSQL**: Transactional query cache and audit persistence backend. *(Note: The bundled single-pod deployment is optimized for air-gapped POCs; for production workloads >5,000 TPS, connect to a managed HA cluster such as AWS Aurora Multi-AZ, GCP Cloud SQL, or CloudNativePG with PgBouncer connection pooling).*
 - **SSD Storage**: High-IOPS persistent SSD volume for merchant asset caching and logos *(NVMe recommended)*.
+
+### ⚡ Reliability, Circuit Breaking & Observability
+* **Automated Latency Budgeting & Fallback:** To maintain strict sub-15ms SLAs in the payment authorization path, the `Enrichment` orchestrator implements automatic circuit breaking. If `Yoda` (neural inference) exceeds its latency budget (>8ms) under high load, the engine seamlessly falls back to `Oracle` (deterministic rule matching).
+* **Distributed Tracing & Correlation:** Standard W3C `traceparent` headers and `X-Correlation-ID` are propagated across all microservices for end-to-end tracing across APM tools (Datadog, Dynatrace, OpenTelemetry, Splunk).
 
 ---
 
@@ -171,6 +175,37 @@ cosign verify --key cosign.pub cr.syniol.com/xyo/gateway:v2.0.0
 cosign verify --key cosign.pub cr.syniol.com/xyo/enrichment:v2.0.0
 cosign verify --key cosign.pub cr.syniol.com/xyo/oracle:v2.0.0
 cosign verify --key cosign.pub cr.syniol.com/xyo/yoda:v2.0.0
+```
+
+### 🚢 Air-Gapped Private Registry Mirroring (Harbor / Artifactory / ECR)
+To mirror signed images into your internal sovereign registry using `skopeo` or `docker`:
+```bash
+# Example using skopeo to copy directly to internal registry:
+skopeo copy --all docker://cr.syniol.com/xyo/gateway:v2.0.0 docker://registry.internal.bank.com/xyo/gateway:v2.0.0
+skopeo copy --all docker://cr.syniol.com/xyo/enrichment:v2.0.0 docker://registry.internal.bank.com/xyo/enrichment:v2.0.0
+skopeo copy --all docker://cr.syniol.com/xyo/oracle:v2.0.0 docker://registry.internal.bank.com/xyo/oracle:v2.0.0
+skopeo copy --all docker://cr.syniol.com/xyo/yoda:v2.0.0 docker://registry.internal.bank.com/xyo/yoda:v2.0.0
+```
+
+### 🔐 Enterprise Secrets Management (Vault / ESO)
+For production Kubernetes environments, avoid plaintext secrets. Use the **Kubernetes External Secrets Operator (ESO)** or **HashiCorp Vault Agent** to inject database passwords and license tokens:
+```yaml
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: xyo-db-credentials
+  namespace: xyo
+spec:
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: xyo-db-secret
+  data:
+    - secretKey: db-dsn
+      remoteRef:
+        key: secret/data/xyo/database
+        property: dsn
 ```
 
 ### 🔨 Binary Builds

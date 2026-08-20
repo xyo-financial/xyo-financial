@@ -317,7 +317,7 @@ cosign verify --key cosign.pub ${INTERNAL_REGISTRY}/gateway:${XYO_VERSION}
 
 ## ⚙️ Docker Compose Hardened Specification
 
-The included [`docker-compose.yml`](file:///Users/hadi/dev/start-ups/xyo/sdks/xyo-developer/onboarding/enterprise-gov/docker/docker-compose.yml) enforces all security directives out of the box:
+The included [`docker-compose.yml`](./docker-compose.yml) enforces all security directives out of the box:
 
 ```yaml
 # Sample extraction from docker-compose.yml showcasing hardening controls
