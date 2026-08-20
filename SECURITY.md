@@ -63,4 +63,14 @@ cosign verify --key cosign.pub cr.syniol.com/xyo/gateway:v2.0.0
 ```
 
 ---
+
+## 📜 Compliance & Data Sovereignty
+
+As a tier-1 data infrastructure provider, XYO Financial adheres to strict zero-egress architecture patterns to satisfy global regulatory frameworks.
+
+For exhaustive documentation regarding our jurisdiction-specific compliance mappings (SAMA, BaFin, GDPR, PCI-DSS), air-gapped guarantees, and cryptographic controls, please refer to our dedicated governance document:
+
+👉 **[XYO Global Regulatory Compliance & Governance Manual (COMPLIANCE.md)](COMPLIANCE.md)**
+
+---
 Copyright &copy; 2026 <a href="https://syniol.com" target="_blank">Syniol Limited</a>. All rights reserved.
