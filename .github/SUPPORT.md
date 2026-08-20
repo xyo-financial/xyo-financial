@@ -7,20 +7,20 @@ For institutions operating our Air-Gapped Appliances or Dedicated High-Throughpu
 
 * **Dedicated Slack/Teams Connect**: Contact your designated Technical Account Manager (TAM) directly in your secure shared channel.
 * **Emergency Escalation (24/7/365)**: Call the dedicated 1-800 NOC hotline provided during your onboarding.
-* **Security & Compliance Audits**: For penetration testing coordination or audit artifact requests, email `compliance@xyo.financial`.
+* **Security & Compliance Audits**: For penetration testing coordination or audit artifact requests, email `compliance@syniol.com`.
 
 ## 🏗️ Tier 2: Large Integrators & Acquirers
 For users of our Multi-Tenant Hybrid topologies:
 
 * **SLA Portal**: Log into the [XYO Enterprise Support Desk](https://support.xyo.financial) using your `x-api-user` credentials to open priority tickets.
-* **Direct Email Support**: Email `enterprise-support@xyo.financial` from an authorized corporate domain. Target initial response time: < 4 hours.
+* **Direct Email Support**: Email `enterprise-support@syniol.com` from an authorized corporate domain. Target initial response time: < 4 hours.
 
 ## 🧭 Tier 3: SME / Fintech Startups
 For teams utilizing our public SaaS APIs and SDKs:
 
 * **Technical Issues**: Before opening an issue, please check our [Documentation](https://docs.xyo.financial) and existing GitHub Issues.
 * **Bug Reports**: If you have identified a bug in an SDK, please open a standard GitHub Issue with reproduction steps.
-* **General Inquiries**: Contact `developer-support@xyo.financial`.
+* **General Inquiries**: Contact `developer-support@syniol.com`.
 
 ---
 

@@ -26,7 +26,7 @@ If you discover a potential security vulnerability, zero-day threat, or cryptogr
 
 Please report all security vulnerabilities privately to our dedicated Product Security Incident Response Team (PSIRT):
 
-* **Direct Security Contact:** `security@syniol.com` (or `security@xyo.financial`)
+* **Direct Security Contact:** `security@syniol.com`
 * **Compliance & Legal Officer:** `compliance@syniol.com`
 * **Emergency Escalation (24/7/365):** Tier-1 enterprise customers should contact their designated Technical Account Manager (TAM) or use the dedicated institutional hotline provided in [SUPPORT.md](.github/SUPPORT.md).
 
