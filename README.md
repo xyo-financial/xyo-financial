@@ -77,7 +77,7 @@ Our OpenAPI specifications serve as the single source of truth across all platfo
 ## 🔒 Security, Compliance & Governance
 
 * 🔐 **Encryption & Cryptographic Standards**  
-  All data in transit is enforced via TLS 1.3 with Perfect Forward Secrecy (PFS); data at rest is encrypted using AES-256-GCM under FIPS 140-3 validated key management.
+<br/>  All data in transit is enforced via TLS 1.3 with Perfect Forward Secrecy (PFS); data at rest is encrypted using AES-256-GCM under FIPS 140-3 validated key management.
 * 🔑 **Authentication & Access Control**  
   Dual-mode enterprise authorization supporting Mutual TLS (mTLS x509 certificates) and cryptographically provisioned Bearer tokens (`Authorization: Bearer <token>`) with automated rotation policies.
 * ⚠️ **Error Semantics & Resilience**  
