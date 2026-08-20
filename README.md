@@ -27,7 +27,7 @@ All XYO client libraries are generated deterministically from our central OpenAP
 | **Java (Java 17+)**      | [xyo-financial/sdk-java](https://github.com/xyo-financial/sdk-java)     | `com.xyo.financial:xyo-sdk:2.0.0`           | `v2.0.0` | **Stable** |
 | **.NET / C# (.NET 8+)**  | [xyo-financial/sdk-dotnet](https://github.com/xyo-financial/sdk-dotnet) | `dotnet add package Xyo.Sdk`                | `v2.0.0` | **Stable** |
 | **Python (3.9+)**        | [xyo-financial/sdk-python](https://github.com/xyo-financial/sdk-python) | `pip install xyo-sdk`                       | `v2.0.1` | **Stable** |
-| **Node.js / TypeScript** | [xyo-financial/sdk-node](https://github.com/xyo-financial/sdk-node)     | `npm install @xyo-financial/sdk`            | `v2.0.0` | **Stable** |
+| **Node.js / TypeScript** | [xyo-financial/sdk-node](https://github.com/xyo-financial/sdk-node)     | `npm install xyo-sdk`                   | `v2.0.0` | **Stable** |
 
 > For architecture principles and generation mechanics, see the [**SDK Architecture Guide**](./sdk/Architecture.md).
 
