@@ -26,43 +26,43 @@ The Hybrid High-Throughput model bridges on-premises banking infrastructure and 
 
 ```mermaid
 flowchart TD
-    subgraph Enterprise["Enterprise Secure On-Premises / Private VPC"]
+    subgraph Enterprise ["Enterprise Secure On-Premises / Private VPC"]
         Switch["Core Banking Switch / Settlement Engine"]
         Tokenizer["Edge Sanitizer & PAN Tokenizer"]
-        L1Cache[("Local L1/L2 Redis Cache\n(Sub-Millisecond Hit Engine)")]
+        L1Cache[("Local L1/L2 Redis Cache<br/>(Sub-Millisecond Hit Engine)")]
         EdgeTunnel["Private DirectConnect / ExpressRoute Router"]
         
-        Switch -->|Raw Transactions| Tokenizer
-        Tokenizer -->|Sanitized Payloads| L1Cache
-        L1Cache -.->|Cache Miss| EdgeTunnel
+        Switch -->|"Raw Transactions"| Tokenizer
+        Tokenizer -->|"Sanitized Payloads"| L1Cache
+        L1Cache -.->|"Cache Miss"| EdgeTunnel
     end
 
-    subgraph DedicatedIngress["Dedicated Enterprise Ingress Zone (Isolated VPC)"]
-        mTLSProxy["mTLS Envoy Gateway\n(IP Allowlisted + Client Cert Auth)"]
-        RateControl["Tenant Partitioning & Quota Controller\n(x-api-user Routing)"]
-        AsyncEngine["High-Throughput Batch Ingestion Queue\n(Kafka / NVMe-Backed Worker Pool)"]
+    subgraph DedicatedIngress ["Dedicated Enterprise Ingress Zone (Isolated VPC)"]
+        mTLSProxy["mTLS Envoy Gateway<br/>(IP Allowlisted + Client Cert Auth)"]
+        RateControl["Tenant Partitioning & Quota Controller<br/>(x-api-user Routing)"]
+        AsyncEngine["High-Throughput Batch Ingestion Queue<br/>(Kafka / NVMe-Backed Worker Pool)"]
         
-        EdgeTunnel ===>|Encrypted Dedicated Pipe\n(PrivateLink / Direct Connect)| mTLSProxy
+        EdgeTunnel ==>|"Encrypted Dedicated Pipe<br/>(PrivateLink / Direct Connect)"| mTLSProxy
         mTLSProxy --> RateControl
         RateControl --> AsyncEngine
     end
 
-    subgraph ProcessingCluster["XYO Sovereign AI Processing Engine"]
+    subgraph ProcessingCluster ["XYO Sovereign AI Processing Engine"]
         Orchestrator["Distributed Batch Orchestrator"]
         AIInference["GPU/TPU ML Categorization Cluster"]
-        KnowledgeGraph[("Merchant Knowledge Graph &\nLogo Asset Store")]
-        ArchiveStore[("Encrypted Blob Storage\n(Signed .tar.gz Archives)")]
+        KnowledgeGraph[("Merchant Knowledge Graph &<br/>Logo Asset Store")]
+        ArchiveStore[("Encrypted Blob Storage<br/>(Signed .tar.gz Archives)")]
         
         AsyncEngine --> Orchestrator
         Orchestrator --> AIInference
         AIInference <--> KnowledgeGraph
-        AIInference -->|Generate Chunk Results| ArchiveStore
+        AIInference -->|"Generate Chunk Results"| ArchiveStore
     end
 
-    subgraph ResultDownload["Asynchronous Result Retrieval"]
+    subgraph ResultDownload ["Asynchronous Result Retrieval"]
         Poller["Enterprise Batch Worker / SDK"]
-        Poller -->|GET /status/id (x-api-user)| mTLSProxy
-        Poller -->|GET .tar.gz Stream| ArchiveStore
+        Poller -->|"GET /status/id (x-api-user)"| mTLSProxy
+        Poller -->|"GET .tar.gz Stream"| ArchiveStore
     end
 ```
 
@@ -165,10 +165,10 @@ To meet rigorous banking compliance standards (PCI-DSS Level 1, SOC 2 Type II, I
 
 ```mermaid
 flowchart LR
-    A["Enterprise Core"] -->|1. Client Hello + Client Cert (mTLS)| B["XYO Perimeter Gateway"]
-    B -->|2. Verify Client Cert & Check Allowlist| C{"Authorized?"}
-    C -->|Yes| D["Route to Dedicated Worker Cluster"]
-    C -->|No| E["403 Forbidden / Drop Connection"]
+    A["Enterprise Core"] -->|"1. Client Hello + Client Cert (mTLS)"| B["XYO Perimeter Gateway"]
+    B -->|"2. Verify Client Cert & Check Allowlist"| C{"Authorized?"}
+    C -->|"Yes"| D["Route to Dedicated Worker Cluster"]
+    C -->|"No"| E["403 Forbidden / Drop Connection"]
 ```
 
 ---
@@ -575,10 +575,10 @@ Large enterprise subscriptions include direct, real-time access to core systems 
 flowchart TD
     EnterpriseOps["Enterprise Operations Center / SRE Team"]
     
-    subgraph SupportTier["Dedicated Enterprise Support Channels"]
-        Bridge["Private Real-Time Bridge\n(Dedicated Slack / MS Teams / Webex)"]
-        TAM["Designated Technical Account Manager (TAM)\n& Principal Solutions Architect"]
-        Hotline["24/7/365 Tier-3 Emergency Hotline\n(Direct Access to Core SRE On-Call)"]
+    subgraph SupportTier ["Dedicated Enterprise Support Channels"]
+        Bridge["Private Real-Time Bridge<br/>(Dedicated Slack / MS Teams / Webex)"]
+        TAM["Designated Technical Account Manager (TAM)<br/>& Principal Solutions Architect"]
+        Hotline["24/7/365 Tier-3 Emergency Hotline<br/>(Direct Access to Core SRE On-Call)"]
     end
     
     EnterpriseOps --> Bridge
