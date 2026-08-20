@@ -11,7 +11,21 @@
   </p>
 </div>
 
-Welcome to the central developer portal for **XYO Financial**'s API specifications, SDK libraries, and integration guides. Our infrastructure is engineered to process, enrich, and categorize high-volume transaction narratives with sub-millisecond latency for Tier-1 financial institutions and fintechs.
+Welcome to the central developer portal for **XYO Financial**'s API specifications, SDK libraries, and integration guides. Our infrastructure is engineered 
+to process, enrich, and categorize high-volume transaction narratives with sub-millisecond latency for Tier-1 financial institutions and fintechs.
+
+---
+
+## 🚀 Architecture & Deployment Topologies
+
+We support flexible deployment topologies tailored to strict regulatory, compliance, and throughput requirements:
+
+* [**Basic SaaS Plan (SMEs & Fintech)**](./onboarding/sme)  
+  Multi-tenant cloud infrastructure with global edge routing for rapid integration.
+* [**Partial On-Premises (High-Throughput)**](./onboarding/large)  
+  Hybrid deployment utilizing local transaction caching, edge tokenization, and private secure tunnels.
+* [**Complete On-Premises (Enterprise & Government)**](./onboarding/enterprise-gov)  
+  Fully air-gapped deployment within your private VPC or on-prem hardware for absolute data sovereignty (GDPR, PCI-DSS, PSD2 compliant).
 
 ---
 
@@ -27,7 +41,7 @@ All XYO client libraries are generated deterministically from our central OpenAP
 | **Java (Java 17+)**      | [xyo-financial/sdk-java](https://github.com/xyo-financial/sdk-java)     | `com.xyo.financial:xyo-sdk:2.0.0`           | `v2.0.0` | **Stable** |
 | **.NET / C# (.NET 8+)**  | [xyo-financial/sdk-dotnet](https://github.com/xyo-financial/sdk-dotnet) | `dotnet add package Xyo.Sdk`                | `v2.0.0` | **Stable** |
 | **Python (3.9+)**        | [xyo-financial/sdk-python](https://github.com/xyo-financial/sdk-python) | `pip install xyo-sdk`                       | `v2.0.1` | **Stable** |
-| **Node.js / TypeScript** | [xyo-financial/sdk-node](https://github.com/xyo-financial/sdk-node)     | `npm install xyo-sdk`                   | `v2.0.0` | **Stable** |
+| **Node.js / TypeScript** | [xyo-financial/sdk-node](https://github.com/xyo-financial/sdk-node)     | `npm install xyo-sdk`                       | `v2.0.0` | **Stable** |
 
 > For architecture principles and generation mechanics, see the [**SDK Architecture Guide**](./sdk/Architecture.md).
 
@@ -43,34 +57,29 @@ Every official SDK provides direct, type-safe access to XYO's core enrichment en
 
 ---
 
-## 🚀 Architecture & Deployment Topologies
-
-We support flexible deployment topologies tailored to strict regulatory, compliance, and throughput requirements:
-
-* [Basic SaaS Plan (SMEs & Fintechs)](./onboarding/sme)  
-  Multi-tenant cloud infrastructure with global edge routing for rapid integration.
-* [Partial On-Premises (High-Throughput)](./onboarding/large)  
-  Hybrid deployment utilizing local transaction caching, edge tokenization, and private secure tunnels.
-* [Complete On-Premises (Enterprise & Government)](./onboarding/enterprise-gov)  
-  Fully air-gapped deployment within your private VPC or on-prem hardware for absolute data sovereignty (GDPR, PCI-DSS, PSD2 compliant).
-
----
-
 ## 📖 API Specifications & Tooling
 
 Our OpenAPI specifications serve as the single source of truth for the entire platform:
 
-* [**OpenAPI 3.0.3 Specification**](https://github.com/xyo-financial/specs/blob/main/openapi.yml) — Hardened schema with rich banking transaction fixtures (Costa, Starbucks, Uber, TfL) and strict RFC 7807 problem details.
-* [**Postman Collection**](https://github.com/xyo-financial/specs/blob/main/postman.json) — Production-ready collection with pre-configured Bearer auth and payload templates.
+* [**Specs Home**](https://github.com/xyo-financial/specs)
+  The home to all types of API specifications and tooling.
+* [**OpenAPI 3.0.3 Specification**](https://github.com/xyo-financial/specs/blob/main/openapi.yml)
+  Hardened schema with rich banking transaction fixtures (Costa, Starbucks, Uber, TfL) and strict RFC 7807 problem details.
+* [**Postman Collection**](https://github.com/xyo-financial/specs/blob/main/postman.json)
+  Production-ready collection with pre-configured Bearer auth and payload templates.
 
 ---
 
 ## 🔒 Security & Compliance
 
-* **Encryption**: All data in transit is enforced via TLS 1.3; data at rest is encrypted using AES-256-GCM.
-* **Authentication**: Bearer Token authentication via cryptographically provisioned API keys (`Authorization: Bearer <token>`).
-* **Error Semantics**: Standardized RFC 7807 Problem Details (`application/problem+json`) across all 4xx/5xx status codes.
-* **Compliance**: Zero-log transaction policies available for enterprise topologies to guarantee GDPR and banking privacy compliance.
+* **Encryption**
+  All data in transit is enforced via TLS 1.3; data at rest is encrypted using AES-256-GCM.
+* **Authentication**
+  Bearer Token authentication via cryptographically provisioned API keys (`Authorization: Bearer <token>`).
+* **Error Semantics**
+  Standardized RFC 7807 Problem Details (`application/problem+json`) across all 4xx/5xx status codes.
+* **Compliance**
+  Zero-log transaction policies are available for enterprise topologies to guarantee GDPR and banking privacy compliance.
 
 ---
 
