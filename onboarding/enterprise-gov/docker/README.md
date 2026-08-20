@@ -48,13 +48,13 @@ flowchart TD
         SSD[("Host NVMe SSD<br/>/var/lib/xyo/logos")]
     end
 
-    Client -->|HTTP 8080| Gateway
-    Gateway -->|gRPC 9091| Enrichment
-    Gateway -->|TCP 5432| DB
-    Enrichment -->|gRPC 9092| Oracle
-    Enrichment -->|gRPC 9093| Yoda
-    Enrichment -->|Read/Write| SSD
-    Gateway -.->|Read-Only| SSD
+    Client -->|"HTTP 8080"| Gateway
+    Gateway -->|"gRPC 9091"| Enrichment
+    Gateway -->|"TCP 5432"| DB
+    Enrichment -->|"gRPC 9092"| Oracle
+    Enrichment -->|"gRPC 9093"| Yoda
+    Enrichment -->|"Read/Write"| SSD
+    Gateway -.->|"Read-Only"| SSD
 ```
 
 ---
