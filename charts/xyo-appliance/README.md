@@ -16,21 +16,21 @@ The XYO Appliance consists of decoupled microservices orchestrated for sub-milli
 
 ```mermaid
 flowchart TD
-    Client(["🏦 Core Banking / Card Processor / Mobile App"]) -->|HTTP/HTTPS :8080| Ingress["🌐 Ingress / Route (TLS)"]
+    Client(["🏦 Core Banking / Card Processor / Mobile App"]) -->|"HTTP/HTTPS :8080"| Ingress["🌐 Ingress / Route (TLS)"]
     Ingress --> SvcGW["⚙️ xyo-gateway Service"]
     
     subgraph K8s ["☸️ Kubernetes / OpenShift Cluster (Namespace: xyo)"]
         SvcGW --> GW["🚀 xyo-gateway Pods (Replicas: 2+)"]
         
-        GW -->|gRPC :9091| SvcEnrich["⚙️ xyo-enrichment Service"]
-        GW -->|SQL :5432| DB[("🗄️ PostgreSQL (Appliance / External RDS)")]
-        GW -.->|Read-Only| PVC[("💾 xyo-logos PVC (ReadWriteMany)")]
+        GW -->|"gRPC :9091"| SvcEnrich["⚙️ xyo-enrichment Service"]
+        GW -->|"SQL :5432"| DB[("🗄️ PostgreSQL (Appliance / External RDS)")]
+        GW -.->|"Read-Only"| PVC[("💾 xyo-logos PVC (ReadWriteMany)")]
         
         SvcEnrich --> Enrich["🧠 xyo-enrichment Pods (Replicas: 2+)"]
-        Enrich -.->|Read-Write| PVC
+        Enrich -.->|"Read-Write"| PVC
         
-        Enrich -->|gRPC :9092| SvcOracle["⚙️ xyo-oracle Service"]
-        Enrich -->|gRPC :9093| SvcYoda["⚙️ xyo-yoda Service"]
+        SvcEnrich -->|"gRPC :9092"| SvcOracle["⚙️ xyo-oracle Service"]
+        SvcEnrich -->|"gRPC :9093"| SvcYoda["⚙️ xyo-yoda Service"]
         
         SvcOracle --> Oracle["🔮 xyo-oracle (Neural NLP Engine)"]
         SvcYoda --> Yoda["⚡ xyo-yoda (Merchant Heuristics Engine)"]

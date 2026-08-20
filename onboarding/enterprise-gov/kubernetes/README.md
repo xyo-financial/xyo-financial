@@ -25,14 +25,14 @@ flowchart TD
         PVC_PG[("xyo-postgres-pvc<br/>ReadWriteOnce: 50Gi")]
     end
 
-    Ingress -->|HTTP / TLS: 8080| GW
-    GW -->|gRPC: 9091| ENR
-    GW -->|TCP: 5432| PG
-    ENR -->|gRPC: 9092| ORA
-    ENR -->|gRPC: 9093| YOD
-    ENR -->|ReadWrite| PVC_LOGOS
-    GW -.->|ReadOnly| PVC_LOGOS
-    PG -->|ReadWrite| PVC_PG
+    Ingress -->|"HTTP / TLS: 8080"| GW
+    GW -->|"gRPC: 9091"| ENR
+    GW -->|"TCP: 5432"| PG
+    ENR -->|"gRPC: 9092"| ORA
+    ENR -->|"gRPC: 9093"| YOD
+    ENR -->|"ReadWrite"| PVC_LOGOS
+    GW -.->|"ReadOnly"| PVC_LOGOS
+    PG -->|"ReadWrite"| PVC_PG
 ```
 
 ### 🛡️ Compliance & Security Hardening Matrix
