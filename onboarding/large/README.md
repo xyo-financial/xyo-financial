@@ -195,7 +195,7 @@ Content-Type: application/json
 
 ## 💻 5. Production Code Examples
 
-### 🐹 Go (Golang) SDK: High-Throughput Ingestion & mTLS Poller
+### 🦫 Go (Golang) SDK: High-Throughput Ingestion & mTLS Poller
 
 The following production-ready Go application demonstrates bulk ingestion, custom mTLS HTTP client configuration, exponential backoff status polling, and stream-decoding of result archives.
 
