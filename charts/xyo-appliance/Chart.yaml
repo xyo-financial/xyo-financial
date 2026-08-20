@@ -14,7 +14,8 @@ keywords:
   - openshift
 home: https://xyo.syniol.com
 sources:
-  - https://github.com/xyo-financial/sdk-java
+  - https://github.com/xyo-financial/specs
+  - https://github.com/xyo-financial/xyo-developer
 maintainers:
   - name: Syniol Limited
     email: support@syniol.com
