@@ -220,7 +220,7 @@ For bare-metal or legacy virtual machine environments, Syniol distributes pre-co
 
 Syniol provides official, type-safe SDK client libraries to simplify integration with the XYO Gateway HTTP API.
 
-### 🐹 Go SDK
+### 🦫 Go SDK
 - **Package**: `github.com/xyo-financial/sdk-go/v2`
 - **Install**:
   ```bash
