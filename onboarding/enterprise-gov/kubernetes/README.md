@@ -54,7 +54,7 @@ flowchart TD
 Syniol provides two Tier-1 enterprise deployment mechanisms:
 
 1. **Helm v3 Production Deployment (Recommended for GitOps & Automation)**:
-   - Packaged Helm chart located at [`charts/xyo-appliance`](file:///Users/hadi/dev/start-ups/xyo/sdks/xyo-developer/charts/xyo-appliance).
+   - Packaged Helm chart located at [`charts/xyo-appliance`](../../../charts/xyo-appliance).
    - Manages parameters, ingress configurations, horizontal pod autoscalers (HPA), secrets integration (HashiCorp Vault / External Secrets Operator), and multi-cluster GitOps workflows (ArgoCD / Flux).
 2. **Pure Air-Gapped Kubernetes Manifests**:
    - Static, declarative YAML manifests in this directory (`kubernetes/`).
@@ -257,6 +257,6 @@ spec:
 ## 📊 High Availability & SLA Recommendations
 
 1. **Horizontal Pod Autoscaling (HPA)**: Configure HPA on `xyo-gateway` and `xyo-enrichment` targeting 70% CPU utilization to maintain <10ms latency SLAs under peak transaction volumes.
-2. **Managed Database**: For Tier-1 production environments with multi-AZ failover, replace the containerized PostgreSQL deployment with a managed enterprise cluster (e.g., AWS RDS PostgreSQL Multi-AZ, Azure Flexible Server, or GCP Cloud SQL) by updating `XYO_DB_DSN` in [`gateway.yaml`](file:///Users/hadi/dev/start-ups/xyo/sdks/xyo-developer/onboarding/enterprise-gov/kubernetes/gateway.yaml).
+2. **Managed Database**: For Tier-1 production environments with multi-AZ failover, replace the containerized PostgreSQL deployment with a managed enterprise cluster (e.g., AWS RDS PostgreSQL Multi-AZ, Azure Flexible Server, or GCP Cloud SQL) by updating `XYO_DB_DSN` in [`gateway.yaml`](./gateway.yaml).
 3. **Network Policies**: Enforce strict egress rules denying all outbound traffic except DNS (`53/udp`), PostgreSQL (`5432/tcp`), and optional license telemetry.
 
