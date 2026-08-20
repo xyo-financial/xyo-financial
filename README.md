@@ -73,12 +73,16 @@ Our OpenAPI specifications serve as the single source of truth for the entire pl
 ## 🔒 Security & Compliance
 
 * **Encryption**
-  All data in transit is enforced via TLS 1.3; data at rest is encrypted using AES-256-GCM.
+
+All data in transit is enforced via TLS 1.3; data at rest is encrypted using AES-256-GCM.
 * **Authentication**
+
   Bearer Token authentication via cryptographically provisioned API keys (`Authorization: Bearer <token>`).
 * **Error Semantics**
+
   Standardized RFC 7807 Problem Details (`application/problem+json`) across all 4xx/5xx status codes.
 * **Compliance**
+
   Zero-log transaction policies are available for enterprise topologies to guarantee GDPR and banking privacy compliance.
 
 ---
