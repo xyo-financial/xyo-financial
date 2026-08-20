@@ -86,9 +86,37 @@ graph LR
 
 ## 🧩 Microservices Topology & Architecture
 
-<p align="center">
-  <img alt="Required Components" src="https://github.com/user-attachments/assets/32a9fbf9-b428-431a-a4e5-74e955b0e6c9" />
-</p>
+```mermaid
+flowchart LR
+    Client(["🏦 Client Applications<br/>(Banking Core / Switch / SDK)"])
+    
+    subgraph IngressLayer ["Ingress & Gateway Layer"]
+        Gateway["🚪 XYO Gateway<br/>• Token Auth & Rate Limiter<br/>• Static Logo Delivery<br/>• Port 8080 HTTP"]
+    end
+    
+    subgraph StorageLayer ["State & Asset Persistence"]
+        DB[("🗄️ PostgreSQL DB<br/>• Query Cache & Audit<br/>• Port 5432 TCP")]
+        SSD[("💾 SSD Storage<br/>• Logo Asset Cache<br/>• High-IOPS Mount")]
+    end
+    
+    subgraph OrchestrationLayer ["Pipeline Orchestration"]
+        Enrichment["⚡ XYO Enrichment<br/>• Latency Circuit Breaker<br/>• gRPC Coordinator (Port 9091)"]
+    end
+    
+    subgraph IntelligenceLayer ["Dual Intelligence Engine"]
+        Oracle["🔮 XYO Oracle<br/>• Deterministic Heuristics<br/>• ISO 18245 MCC Matcher<br/>• Port 9092 gRPC"]
+        Yoda["🧠 XYO Yoda<br/>• Neural NLP Categorizer<br/>• Semantic Entity Resolution<br/>• Port 9093 gRPC"]
+    end
+
+    Client -->|"HTTP/HTTPS :8080"| Gateway
+    Gateway -->|"TCP :5432"| DB
+    Gateway -.->|"Read-Only"| SSD
+    Gateway -->|"gRPC :9091"| Enrichment
+    
+    Enrichment -->|"gRPC :9092"| Oracle
+    Enrichment -->|"gRPC :9093"| Yoda
+    Enrichment -.->|"Read/Write"| SSD
+```
 
 The platform operates as a modular, decoupled microservice suite:
 
