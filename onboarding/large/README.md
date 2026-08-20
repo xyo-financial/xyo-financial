@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>XYO Financial &mdash; Enterprise Integration Guide</h1>
+  <h1>XYO Financial: Enterprise Integration Guide</h1>
   <p><b>High-Throughput Batch Processing, Hybrid Topologies, and Institutional Ingress Architecture</b></p>
   <p>
     <a href="https://github.com/xyo-financial/specs"><img src="https://img.shields.io/badge/OpenAPI-3.0.3-green.svg" alt="OpenAPI 3.0" /></a>

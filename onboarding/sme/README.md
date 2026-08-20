@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>XYO Financial &mdash; SME & Fintech Cloud SaaS Onboarding Guide</h1>
+  <h1>XYO Financial: SME & Fintech Cloud SaaS Onboarding Guide</h1>
   <p><b>Institutional-Grade AI Payment Transaction Enrichment Platform</b></p>
   <p>
     <a href="https://api.xyo.financial"><img src="https://img.shields.io/badge/Endpoint-https%3A%2F%2Fapi.xyo.financial-0A84FF.svg?style=flat-square" alt="API Endpoint" /></a>
@@ -526,7 +526,7 @@ An RFC 7807 error object comprises:
 
 Before deploying your XYO integration to live customer traffic, ensure your engineering team has verified the following operational criteria:
 
-- [ ] **Secrets Management**: API keys are loaded via environment variables or secret vaults—never committed to git.
+- [ ] **Secrets Management**: API keys are loaded via environment variables or secret vaults, and never committed to git.
 - [ ] **HTTP Connection Pooling**: Enabled TCP Keep-Alive and connection pooling in your HTTP client to eliminate TLS handshake overhead on every request (crucial for sub-15ms performance).
 - [ ] **Timeout Budgeting**: Configured a strict timeout of `50ms - 100ms` for real-time payment authorization webhooks to prevent card network timeouts.
 - [ ] **Circuit Breaker Fallback**: Implemented a graceful fallback that renders the raw un-enriched narrative to the customer in the unlikely event of an enrichment timeout.

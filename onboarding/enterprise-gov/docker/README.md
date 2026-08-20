@@ -1,4 +1,4 @@
-# 🛡️ XYO Financial Platform — Hardened Container Security & Deployment
+# 🛡️ XYO Financial Platform - Hardened Container Security & Deployment
 
 This guide outlines the production deployment, container security posture, cryptographic supply chain verification, and air-gapped operations for the **XYO Financial Transaction Enrichment Service** using Docker and Docker Compose in Tier-1 banks, financial institutions, and sovereign government infrastructure.
 

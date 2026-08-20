@@ -8,7 +8,7 @@
 
 ## 🏛️ Ecosystem Overview
 
-The **XYO Financial SDK Suite** provides official, production-grade client libraries across multiple programming languages. All SDKs are generated from a single source of truth—the canonical OpenAPI 3.0 specification maintained in [`xyo-financial/specs`](https://github.com/xyo-financial/specs)—ensuring zero schema drift across all client implementations.
+The **XYO Financial SDK Suite** provides official, production-grade client libraries across multiple programming languages. All SDKs are deterministically generated from the canonical OpenAPI 3.0 specification maintained in [`xyo-financial/specs`](https://github.com/xyo-financial/specs), ensuring zero schema drift across all client implementations.
 
 ### Supported Language SDKs
 
