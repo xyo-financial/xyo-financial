@@ -3,7 +3,7 @@
 ## Mission-Critical Financial Transaction Enrichment Platform
 **Document Ref:** XYO-GOV-COMP-2026-V1  
 **Classification:** Enterprise Public / Regulatory Assurance  
-**Target Jurisdictions:** Kingdom of Saudi Arabia (KSA), People's Republic of China (PRC), United Kingdom (UK), United States (US), Federal Republic of Germany (EU/BaFin)
+**Target Jurisdictions:** United Kingdom (UK), United States (US), Federal Republic of Germany (EU/BaFin), People's Republic of China (PRC), Kingdom of Saudi Arabia (KSA)
 
 ---
 
@@ -21,7 +21,73 @@ Because financial transaction narratives contain sensitive personal identifiable
 
 ## 2. Jurisdiction-Specific Regulatory Profiles
 
-### 🇸🇦 1. Kingdom of Saudi Arabia (KSA)
+### 🇬🇧 1. United Kingdom (UK)
+
+The UK regulatory landscape for Tier-1 banks (e.g., Barclays, HSBC UK, Lloyds) is governed by the **Prudential Regulation Authority (PRA)**, the **Financial Conduct Authority (FCA)**, and the **Information Commissioner's Office (ICO)**.
+
+#### Governing Authorities & Legal Frameworks
+* **Bank of England / PRA Supervisory Statement SS2/21:** Outlines mandatory governance over outsourcing and third-party risk management (TPRM), operational resilience, access/audit rights, and business continuity.
+* **FCA FG16/5 (Guidance on Cloud & Third-Party Outsourcing):** Prescribes data security, risk identification, and exit strategy mandates.
+* **UK Data Protection Act 2018 & UK GDPR:** Governs the lawful processing, minimization, and security of payment transaction records.
+* **Payment Services Regulations 2017 (PSRs) & Open Banking Standards:** Mandates open banking API security, SCA (Strong Customer Authentication), and deterministic problem reporting (RFC 7807).
+
+#### Technical Governance
+* **Operational Resilience:** Architected to support active-active multi-region failover and meet institutional Recovery Time Objectives (RTO < 1 min) and Recovery Point Objectives (RPO = 0).
+* **UK Payment Rails:** Native enrichment for **Faster Payments System (FPS)**, **BACS**, and **CHAPS** transaction strings.
+
+---
+
+### 🇺🇸 2. United States of America (US)
+
+In the United States, federally regulated institutions (e.g., JPMorgan Chase, Bank of America, Citibank) are subject to interagency oversight from the **Office of the Comptroller of the Currency (OCC)**, the **Federal Reserve Board (FRB)**, the **FDIC**, and state regulators (e.g., **NYDFS**).
+
+#### Governing Authorities & Legal Frameworks
+* **Interagency Guidance on Third-Party Relationships (OCC 2023-17 / FRB SR 23-4 / FDIC FIL-29-2023):** Comprehensive lifecycle risk management requirements for third-party technology providers.
+* **Gramm-Leach-Bliley Act (GLBA Safeguards Rule - 16 CFR Part 314):** Requires administrative, technical, and physical safeguards to protect nonpublic personal information (NPI).
+* **NYDFS 23 NYCRR 500:** Strict cybersecurity regulation mandating multi-factor authentication, data encryption at rest and in transit, comprehensive audit trails, and 72-hour incident reporting.
+* **FFIEC IT Examination Handbooks:** Architecture, Business Continuity, and Information Security standards.
+* **Service Organization Controls:** Certified **SOC 1 Type II** and **SOC 2 Type II** (Security, Availability, Confidentiality) compliance.
+
+#### Technical Governance
+* **Cryptographic Standards:** **FIPS 140-3** validated cryptographic modules for AES-256-GCM data encryption and TLS 1.3 key exchange.
+* **US Payment Rails:** Native transaction parsing for **FedNow**, **The Clearing House RTP**, **ACH**, and **Fedwire / CHIPS**.
+
+---
+
+### 🇩🇪 3. Federal Republic of Germany & European Union (EU / BaFin)
+
+German financial institutions (e.g., Deutsche Bank, Commerzbank) operate under the strictest European Union harmonized standards overseen by the **Federal Financial Supervisory Authority (BaFin)**, the **Deutsche Bundesbank**, and the **European Banking Authority (EBA)**.
+
+#### Governing Authorities & Legal Frameworks
+* **Digital Operational Resilience Act (DORA - Regulation EU 2022/2554):** Binding EU-wide framework for ICT risk management, third-party ICT service provider oversight, resilience testing (TLPT), and incident management.
+* **BaFin BAIT (Bankaufsichtliche Anforderungen an die IT):** Circular specifying IT governance, IT security, change management, and software development lifecycles.
+* **EBA Guidelines on Outsourcing (EBA/GL/2019/02):** Mandates comprehensive audit rights, information security standards, and exit management for critical outsourced banking functions.
+* **EU GDPR (Regulation EU 2016/679):** Strict data protection standards with severe penalties for unauthorized processing or international transfers without adequacy mechanisms.
+* **BSI IT-Grundschutz & Cloud Computing Compliance Criteria Catalogue (C5):** German Federal Office for Information Security standards.
+
+#### Technical Governance
+* **Banking Secrecy (*Bankgeheimnis*):** Total technical isolation to ensure no co-mingling of tenant data.
+* **EU Payment Rails:** Native support for **SEPA Credit Transfer (SCT)**, **SEPA Instant (SCT Inst)**, and **TARGET2** ISO 20022 formats.
+
+---
+
+### 🇨🇳 4. People's Republic of China (PRC)
+
+Financial data in mainland China is strictly regulated under the national national security and data sovereignty regime administered by the **People's Bank of China (PBOC)**, the **Cyberspace Administration of China (CAC)**, and the **National Financial Regulatory Administration (NFRA)**.
+
+#### Governing Authorities & Legal Frameworks
+* **Personal Information Protection Law (PIPL):** Imposes strict extraterritorial transfer rules, mandatory security assessments, and explicit consent mechanisms for personal and financial information.
+* **Data Security Law (DSL):** Establishes a hierarchical data classification system (*Core Data*, *Important Data*, *General Data*) and prohibits unauthorized provision of domestic data to foreign judicial or enforcement bodies.
+* **Cybersecurity Law (CSL) & Critical Information Infrastructure (CII) Protection:** Mandates that operators of critical financial infrastructure store financial transaction data domestically.
+* **Multi-Level Protection Scheme (MLPS 2.0 - Level 3+):** Requires rigorous kernel-level security, role-based access control, and mandatory state cryptographic algorithms (SM2/SM3/SM4 support where mandated).
+
+#### Data Sovereignty & Deployment Architecture
+* **Strict Air-Gapped / Domestic Boundary:** Multi-tenant overseas SaaS is strictly prohibited for PRC financial institutions. Deployments must operate in localized Chinese data centers (e.g., Shanghai/Beijing on-prem or sovereign private cloud).
+* **National Payment Rail Support:** Native schema compliance with **China UnionPay (CUP)**, **CIPS (Cross-Border Interbank Payment System)**, and PBOC ISO 20022 message formats.
+
+---
+
+### 🇸🇦 5. Kingdom of Saudi Arabia (KSA)
 
 Saudi Arabia enforces rigorous data localization and cybersecurity controls through the **Saudi Central Bank (SAMA)**, the **National Cybersecurity Authority (NCA)**, and the **Saudi Data and Artificial Intelligence Authority (SDAIA)**.
 
@@ -39,83 +105,17 @@ Saudi Arabia enforces rigorous data localization and cybersecurity controls thro
 
 ---
 
-### 🇨🇳 2. People's Republic of China (PRC)
-
-Financial data in mainland China is strictly regulated under the national national security and data sovereignty regime administered by the **People's Bank of China (PBOC)**, the **Cyberspace Administration of China (CAC)**, and the **National Financial Regulatory Administration (NFRA)**.
-
-#### Governing Authorities & Legal Frameworks
-* **Personal Information Protection Law (PIPL):** Imposes strict extraterritorial transfer rules, mandatory security assessments, and explicit consent mechanisms for personal and financial information.
-* **Data Security Law (DSL):** Establishes a hierarchical data classification system (*Core Data*, *Important Data*, *General Data*) and prohibits unauthorized provision of domestic data to foreign judicial or enforcement bodies.
-* **Cybersecurity Law (CSL) & Critical Information Infrastructure (CII) Protection:** Mandates that operators of critical financial infrastructure store financial transaction data domestically.
-* **Multi-Level Protection Scheme (MLPS 2.0 - Level 3+):** Requires rigorous kernel-level security, role-based access control, and mandatory state cryptographic algorithms (SM2/SM3/SM4 support where mandated).
-
-#### Data Sovereignty & Deployment Architecture
-* **Strict Air-Gapped / Domestic Boundary:** Multi-tenant overseas SaaS is strictly prohibited for PRC financial institutions. Deployments must operate in localized Chinese data centers (e.g., Shanghai/Beijing on-prem or sovereign private cloud).
-* **National Payment Rail Support:** Native schema compliance with **China UnionPay (CUP)**, **CIPS (Cross-Border Interbank Payment System)**, and PBOC ISO 20022 message formats.
-
----
-
-### 🇬🇧 3. United Kingdom (UK)
-
-The UK regulatory landscape for Tier-1 banks (e.g., Barclays, HSBC UK, Lloyds) is governed by the **Prudential Regulation Authority (PRA)**, the **Financial Conduct Authority (FCA)**, and the **Information Commissioner's Office (ICO)**.
-
-#### Governing Authorities & Legal Frameworks
-* **Bank of England / PRA Supervisory Statement SS2/21:** Outlines mandatory governance over outsourcing and third-party risk management (TPRM), operational resilience, access/audit rights, and business continuity.
-* **FCA FG16/5 (Guidance on Cloud & Third-Party Outsourcing):** Prescribes data security, risk identification, and exit strategy mandates.
-* **UK Data Protection Act 2018 & UK GDPR:** Governs the lawful processing, minimization, and security of payment transaction records.
-* **Payment Services Regulations 2017 (PSRs) & Open Banking Standards:** Mandates open banking API security, SCA (Strong Customer Authentication), and deterministic problem reporting (RFC 7807).
-
-#### Technical Governance
-* **Operational Resilience:** Architected to support active-active multi-region failover and meet institutional Recovery Time Objectives (RTO < 1 min) and Recovery Point Objectives (RPO = 0).
-* **UK Payment Rails:** Native enrichment for **Faster Payments System (FPS)**, **BACS**, and **CHAPS** transaction strings.
-
----
-
-### 🇺🇸 4. United States of America (US)
-
-In the United States, federally regulated institutions (e.g., JPMorgan Chase, Bank of America, Citibank) are subject to interagency oversight from the **Office of the Comptroller of the Currency (OCC)**, the **Federal Reserve Board (FRB)**, the **FDIC**, and state regulators (e.g., **NYDFS**).
-
-#### Governing Authorities & Legal Frameworks
-* **Interagency Guidance on Third-Party Relationships (OCC 2023-17 / FRB SR 23-4 / FDIC FIL-29-2023):** Comprehensive lifecycle risk management requirements for third-party technology providers.
-* **Gramm-Leach-Bliley Act (GLBA Safeguards Rule - 16 CFR Part 314):** Requires administrative, technical, and physical safeguards to protect nonpublic personal information (NPI).
-* **NYDFS 23 NYCRR 500:** Strict cybersecurity regulation mandating multi-factor authentication, data encryption at rest and in transit, comprehensive audit trails, and 72-hour incident reporting.
-* **FFIEC IT Examination Handbooks:** Architecture, Business Continuity, and Information Security standards.
-* **Service Organization Controls:** Certified **SOC 1 Type II** and **SOC 2 Type II** (Security, Availability, Confidentiality) compliance.
-
-#### Technical Governance
-* **Cryptographic Standards:** **FIPS 140-3** validated cryptographic modules for AES-256-GCM data encryption and TLS 1.3 key exchange.
-* **US Payment Rails:** Native transaction parsing for **FedNow**, **The Clearing House RTP**, **ACH**, and **Fedwire / CHIPS**.
-
----
-
-### 🇩🇪 5. Federal Republic of Germany & European Union (EU / BaFin)
-
-German financial institutions (e.g., Deutsche Bank, Commerzbank) operate under the strictest European Union harmonized standards overseen by the **Federal Financial Supervisory Authority (BaFin)**, the **Deutsche Bundesbank**, and the **European Banking Authority (EBA)**.
-
-#### Governing Authorities & Legal Frameworks
-* **Digital Operational Resilience Act (DORA - Regulation EU 2022/2554):** Binding EU-wide framework for ICT risk management, third-party ICT service provider oversight, resilience testing (TLPT), and incident management.
-* **BaFin BAIT (Bankaufsichtliche Anforderungen an die IT):** Circular specifying IT governance, IT security, change management, and software development lifecycles.
-* **EBA Guidelines on Outsourcing (EBA/GL/2019/02):** Mandates comprehensive audit rights, information security standards, and exit management for critical outsourced banking functions.
-* **EU GDPR (Regulation EU 2016/679):** Strict data protection standards with severe penalties for unauthorized processing or international transfers without adequacy mechanisms.
-* **BSI IT-Grundschutz & Cloud Computing Compliance Criteria Catalogue (C5):** German Federal Office for Information Security standards.
-
-#### Technical Governance
-* **Banking Secrecy (*Bankgeheimnis*):** Total technical isolation to ensure no co-mingling of tenant data.
-* **EU Payment Rails:** Native support for **SEPA Credit Transfer (SCT)**, **SEPA Instant (SCT Inst)**, and **TARGET2** ISO 20022 formats.
-
----
-
 ## 3. Comparative Multi-Jurisdiction Compliance Matrix
 
-| Requirement / Standard | 🇸🇦 Saudi Arabia (SAMA/NCA) | 🇨🇳 China (PBOC/CAC) | 🇬🇧 United Kingdom (PRA/FCA) | 🇺🇸 United States (OCC/NYDFS) | 🇩🇪 Germany & EU (BaFin/DORA) |
+| Requirement / Standard | 🇬🇧 United Kingdom (PRA/FCA) | 🇺🇸 United States (OCC/NYDFS) | 🇩🇪 Germany & EU (BaFin/DORA) | 🇨🇳 China (PBOC/CAC) | 🇸🇦 Saudi Arabia (SAMA/NCA) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Data Residency Requirement** | **Strict In-Kingdom** | **Strict Domestic** | Standard Adequacy | US Territory / Approved | **Strict EU / EEA** |
-| **Primary Cyber Framework** | SAMA CSF / NCA ECC-1 | MLPS 2.0 (Level 3+) | PRA SS2/21 | NIST CSF / NYDFS 500 | DORA / BaFin BAIT |
-| **Air-Gapped VPC Support** | **Mandatory** | **Mandatory** | Supported | Supported | Supported |
-| **Cryptographic Standards** | NCA-approved / AES-256 | SM2/SM3/SM4 / AES-256 | TLS 1.3 / AES-256 | FIPS 140-3 / TLS 1.3 | BSI C5 / AES-256 |
-| **Third-Party Audit Rights** | Mandated (SAMA) | Mandated (PBOC/CAC) | Mandated (PRA SS2/21) | Mandated (OCC 2023-17) | Mandated (DORA/EBA) |
+| **Data Residency Requirement** | Standard Adequacy | US Territory / Approved | **Strict EU / EEA** | **Strict Domestic** | **Strict In-Kingdom** |
+| **Primary Cyber Framework** | PRA SS2/21 | NIST CSF / NYDFS 500 | DORA / BaFin BAIT | MLPS 2.0 (Level 3+) | SAMA CSF / NCA ECC-1 |
+| **Air-Gapped VPC Support** | Supported | Supported | Supported | **Mandatory** | **Mandatory** |
+| **Cryptographic Standards** | TLS 1.3 / AES-256 | FIPS 140-3 / TLS 1.3 | BSI C5 / AES-256 | SM2/SM3/SM4 / AES-256 | NCA-approved / AES-256 |
+| **Third-Party Audit Rights** | Mandated (PRA SS2/21) | Mandated (OCC 2023-17) | Mandated (DORA/EBA) | Mandated (PBOC/CAC) | Mandated (SAMA) |
 | **Zero-Log Guarantee** | Supported | Supported | Supported | Supported | Supported |
-| **National Payment Rails** | Mada, SARIE, SADAD | UnionPay, CIPS | Faster Payments, CHAPS | FedNow, RTP, ACH | SEPA, SEPA Inst, TARGET2 |
+| **National Payment Rails** | Faster Payments, CHAPS | FedNow, RTP, ACH | SEPA, SEPA Inst, TARGET2 | UnionPay, CIPS | Mada, SARIE, SADAD |
 
 ---
 
@@ -166,5 +166,6 @@ For institutional regulatory audit requests, DORA compliance schedules, or SAMA/
 * **Legal & Master Services Inquiries:** `legal@syniol.com`
 
 ---
+
 Copyright &copy; 2026 <a href='https://syniol.com' target='_blank'>Syniol Limited</a>. All rights reserved.  
 Distributed under the **Apache License, Version 2.0** (Client SDKs) and **XYO Master Services Agreement** (Enterprise Core).
