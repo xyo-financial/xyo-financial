@@ -12,8 +12,8 @@ Only the latest active major/minor release tracks of the **XYO Enrichment Platfo
 
 | Component | Version Track | Security Support Status |
 | :--- | :--- | :--- |
-| **XYO Appliance (Core / Helm)** | `v2.0.x` | :white_check_mark: Actively Supported |
-| **Official v2 SDKs (C++, Rust, Go, Java, .NET, Python, Node.js)** | `v2.0.x` | :white_check_mark: Actively Supported |
+| **XYO Appliance (Core / Helm)** | `v2.x.x` | :white_check_mark: Actively Supported |
+| **Official v2 SDKs (C++, Rust, Go, Java, .NET, Python, Node.js)** | `v2.x.x` | :white_check_mark: Actively Supported |
 | **Legacy v1 SDKs** | `v1.x.x` | :x: End of Life (Upgrade Recommended) |
 
 ---
