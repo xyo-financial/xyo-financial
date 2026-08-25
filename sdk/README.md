@@ -16,7 +16,7 @@ The **XYO Financial SDK Suite** provides official, production-grade client libra
 |---|---|---|---|---|---|
 | **C++ (C++17)** | [`xyo-financial/sdk-cpp`](https://github.com/xyo-financial/sdk-cpp) | `xyo-sdk` | `cpp-restsdk` | `v2.1.0` | **Stable** |
 | **Rust** | [`xyo-financial/sdk-rust`](https://github.com/xyo-financial/sdk-rust) | `xyo-sdk` | `rust` (`openapi-client`) | `v2.1.0` | **Stable** |
-| **Go (Golang)** | [`xyo-financial/sdk-go`](https://github.com/xyo-financial/sdk-go) | `github.com/xyo-financial/sdk-go/v2` | `go` (`openapi` package) | `v2.1.0` | **Stable** |
+| **Go (Golang)** | [`xyo-financial/sdk-go`](https://github.com/xyo-financial/sdk-go) | `github.com/xyo-financial/sdk-go/v2` | `go` (`openapi` package) | `v2.1.1` | **Stable** |
 | **Java (Java 17+)** | [`xyo-financial/sdk-java`](https://github.com/xyo-financial/sdk-java) | `com.xyo.financial:xyo-sdk` | `java` (Native library) | `v2.1.0` | **Stable** |
 | **.NET / C# (.NET 8+)** | [`xyo-financial/sdk-dotnet`](https://github.com/xyo-financial/sdk-dotnet) | `Xyo.Sdk` | `csharp-netcore` | `v2.1.0` | **Stable** |
 | **Python (3.9+)** | [`xyo-financial/sdk-python`](https://github.com/xyo-financial/sdk-python) | `xyo-sdk` | `python` | `v2.1.0` | **Stable** |
