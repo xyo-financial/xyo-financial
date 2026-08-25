@@ -11,7 +11,7 @@ The XYO Enrichment Platform is engineered specifically for Tier-1 financial inst
 
 | Pillar | Guarantee | Technical Implementation |
 | :--- | :--- | :--- |
-| **Data Sovereignty & Zero PII Egress** | 100% In-Boundary Execution | Raw transaction strings, account numbers, and financial counterparty data are processed entirely in-memory within your VPC or bare-metal host. **Zero telemetry, zero external model queries, and zero PII egress.** |
+| **Data Sovereignty & Zero PII Egress** | 100% In-Boundary Execution | Raw transaction strings, account numbers, and financial counterparty data are processed entirely in-memory within your VPC or bare-metal host. **Zero telemetry, Oracle and Yoda models make API calls strictly to endpoints within the client's local deployment region (enforcing Regional Data Sovereignty), and zero PII egress.** |
 | **Supply Chain Integrity (Cosign)** | Cryptographic Image Provenance | All OCI container images are signed with Sigstore Cosign at build time and verified against Syniol's public key before deployment. |
 | **Deterministic SLA & High Throughput** | Sub-10ms P99 Latency & 99.999% SLA | Deterministic pattern matching combined with optimized ONNX/TensorRT inference engines deliver over 100,000 enrichments per second with linear horizontal scalability. |
 | **Zero-Trust Hardened Security** | PSS `Restricted` & OpenShift `restricted-v2` | Pods run rootless (`UID:GID 10001:10001`), with immutable read-only root filesystems (`readOnlyRootFilesystem: true`), all Linux capabilities dropped (`drop: ["ALL"]`), and kernel privilege escalation blocked. |

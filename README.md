@@ -86,7 +86,7 @@ Our OpenAPI specifications serve as the single source of truth across all platfo
   Standardized RFC 7807 Problem Details (`application/problem+json`) across all HTTP status codes, coupled with idempotent request handling (`X-Idempotency-Key`) and distributed trace correlation (`X-Correlation-ID`).
 
 * 📜 **Regulatory Compliance & Data Sovereignty**  
-  Full alignment with **PCI-DSS v4.0**, **SOC 2 Type II**, **ISO/IEC 27001**, **UK/EU GDPR & DORA**, **US GLBA / OCC 2023-17**, **Saudi SAMA CSF & PDPL**, and **China PIPL / DSL**. Zero-log transaction policies are standard for on-premises and sovereign deployments to prevent cross-border data leakage.
+  Full alignment with **PCI-DSS v4.0**, **SOC 2 Type II**, **ISO/IEC 27001**, **UK/EU GDPR & DORA**, **US GLBA / OCC 2023-17**, **Saudi SAMA CSF & PDPL**, and **China PIPL / DSL**. Structured operational logging and distributed tracing are used, but zero raw customer transaction data or PII is ever logged (enforced via masking/redaction) to prevent cross-border data leakage.
 
 > For detailed regulatory frameworks across UK, US, Germany, China, and Saudi Arabia, see the [**Global Compliance & Data Sovereignty Guide**](./COMPLIANCE.md).
 

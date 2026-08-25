@@ -14,7 +14,7 @@ The **XYO Financial Transaction Enrichment Platform** is engineered to meet the 
 Because financial transaction narratives contain sensitive personal identifiable information (PII), payment card industry data (PAN/track data), and counterparty banking metadata, XYO enforces a **Zero-Egress / Sovereign Boundary Architecture**:
 
 * **100% In-Boundary Execution:** In on-premises and private VPC deployments, raw transaction narratives, account identifiers, and enriched outputs are processed entirely in-memory within the client's sovereign security perimeter.
-* **Zero Telemetry & Zero External Model Invocations:** No transaction data, logs, or statistical telemetry are ever transmitted to external AI endpoints, third-party clouds, or overseas jurisdictions.
+* **Zero Telemetry & Regional Model Invocations:** Oracle and Yoda models make API calls strictly to endpoints within the client's local deployment region (enforcing Regional Data Sovereignty). Structured operational logging and distributed tracing are used, but zero raw customer transaction data or PII is ever logged (enforced via masking/redaction). No statistical telemetry is ever transmitted to third-party clouds or overseas jurisdictions.
 * **Deterministic Cryptographic Provenance:** Signed container images (Sigstore Cosign), rootless execution, read-only filesystems, and FIPS 140-3 validated encryption ensure tamper-evident runtime integrity.
 
 ---
@@ -114,7 +114,7 @@ Saudi Arabia enforces rigorous data localization and cybersecurity controls thro
 | **Air-Gapped VPC Support** | Supported | Supported | Supported | **Mandatory** | **Mandatory** |
 | **Cryptographic Standards** | TLS 1.3 / AES-256 | FIPS 140-3 / TLS 1.3 | BSI C5 / AES-256 | SM2/SM3/SM4 / AES-256 | NCA-approved / AES-256 |
 | **Third-Party Audit Rights** | Mandated (PRA SS2/21) | Mandated (OCC 2023-17) | Mandated (DORA/EBA) | Mandated (PBOC/CAC) | Mandated (SAMA) |
-| **Zero-Log Guarantee** | Supported | Supported | Supported | Supported | Supported |
+| **Zero-PII Logging Guarantee** | Supported | Supported | Supported | Supported | Supported |
 | **National Payment Rails** | Faster Payments, CHAPS | FedNow, RTP, ACH | SEPA, SEPA Inst, TARGET2 | UnionPay, CIPS | Mada, SARIE, SADAD |
 
 ---
