@@ -1,0 +1,34 @@
+name: Sync SDK Versions
+
+on:
+  repository_dispatch:
+    types: [sdk-version-updated]
+
+jobs:
+  update-versions:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update versions
+        run: |
+          SDK="${{ github.event.client_payload.sdk }}"
+          VERSION="${{ github.event.client_payload.version }}"
+          VERSION_NO_V="${VERSION#v}"
+          
+          # Update README.md
+          sed -i -E "/sdk-${SDK}/ s/\`v[0-9]+\.[0-9]+\.[0-9]+\`/\`${VERSION}\`/g" README.md
+          sed -i -E "/sdk-${SDK}/ s/xyo-sdk:[0-9]+\.[0-9]+\.[0-9]+/xyo-sdk:${VERSION_NO_V}/g" README.md
+          
+          # Update sdk/README.md
+          sed -i -E "/sdk-${SDK}/ s/\`v[0-9]+\.[0-9]+\.[0-9]+\`/\`${VERSION}\`/g" sdk/README.md
+          sed -i -E "/sdk-${SDK}/ s/xyo-sdk:[0-9]+\.[0-9]+\.[0-9]+/xyo-sdk:${VERSION_NO_V}/g" sdk/README.md
+          
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(docs): update ${{ github.event.client_payload.sdk }} version to ${{ github.event.client_payload.version }}"
+          commit_author: "Hadi Tajallaei <68777073+syniol@users.noreply.github.com>"
