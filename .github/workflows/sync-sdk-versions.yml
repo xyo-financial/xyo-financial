@@ -3,6 +3,16 @@ name: Sync SDK Versions
 on:
   repository_dispatch:
     types: [sdk-version-updated]
+  workflow_dispatch:
+    inputs:
+      sdk:
+        description: 'Target SDK name (e.g. go, cpp, java, dotnet, node, python, rust)'
+        required: true
+        type: string
+      version:
+        description: 'New version tag (e.g. v2.1.1 or 2.1.1)'
+        required: true
+        type: string
 
 jobs:
   update-versions:
@@ -13,22 +23,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Update versions
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Update versions in documentation tables
         run: |
-          SDK="${{ github.event.client_payload.sdk }}"
-          VERSION="${{ github.event.client_payload.version }}"
-          VERSION_NO_V="${VERSION#v}"
+          SDK="${{ github.event.client_payload.sdk || inputs.sdk }}"
+          VERSION="${{ github.event.client_payload.version || inputs.version }}"
           
-          # Update README.md
-          sed -i -E "/sdk-${SDK}/ s/\`v[0-9]+\.[0-9]+\.[0-9]+\`/\`${VERSION}\`/g" README.md
-          sed -i -E "/sdk-${SDK}/ s/xyo-sdk:[0-9]+\.[0-9]+\.[0-9]+/xyo-sdk:${VERSION_NO_V}/g" README.md
+          if [ -z "$SDK" ] || [ -z "$VERSION" ]; then
+            echo "Error: SDK and Version parameters must not be empty."
+            exit 1
+          fi
           
-          # Update sdk/README.md
-          sed -i -E "/sdk-${SDK}/ s/\`v[0-9]+\.[0-9]+\.[0-9]+\`/\`${VERSION}\`/g" sdk/README.md
-          sed -i -E "/sdk-${SDK}/ s/xyo-sdk:[0-9]+\.[0-9]+\.[0-9]+/xyo-sdk:${VERSION_NO_V}/g" sdk/README.md
-          
+          python3 .github/scripts/sync_sdk_versions.py "$SDK" "$VERSION"
+
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore(docs): update ${{ github.event.client_payload.sdk }} version to ${{ github.event.client_payload.version }}"
+          commit_message: "chore(docs): update ${{ github.event.client_payload.sdk || inputs.sdk }} version to ${{ github.event.client_payload.version || inputs.version }}"
           commit_author: "Hadi Tajallaei <68777073+syniol@users.noreply.github.com>"
