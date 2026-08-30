@@ -80,11 +80,43 @@ kubectl create secret docker-registry syniol-registry-secret \
 
 ### 2. Install the Chart
 
-Install using default embedded configuration:
+> [!IMPORTANT]
+> **The chart ships no credentials.** A licence and a database credential must both
+> be supplied, and the render fails with a message naming the missing value if either
+> is absent. This is deliberate: a chart carrying working defaults gives every
+> operator who does not override them an identically-credentialled database, with the
+> value readable by anyone holding the chart.
+
+Each credential can be supplied in one of two ways. Referencing a Secret you already
+manage is preferred for production, since a value passed with `--set` is recorded in
+the Helm release history.
+
+| Credential | Reference an existing Secret | Or supply the value |
+| :--- | :--- | :--- |
+| Licence | `global.existingLicenseSecret` | `global.licenseKey` |
+| Database (bundled) | `postgresql.auth.existingSecret` | `postgresql.auth.password` |
+| Database (external) | `postgresql.external.existingSecret` | `postgresql.external.dsn` |
+
+**Production, referencing Secrets you manage:**
+```bash
+kubectl create secret generic xyo-license \
+  --namespace xyo --from-literal=license-key="YOUR-ENTERPRISE-LICENSE-KEY"
+
+kubectl create secret generic xyo-db \
+  --namespace xyo --from-literal=postgres-password="$(openssl rand -base64 24)"
+
+helm install xyo-prod ./charts/xyo-appliance \
+  --namespace xyo \
+  --set global.existingLicenseSecret="xyo-license" \
+  --set postgresql.auth.existingSecret="xyo-db"
+```
+
+**Evaluation, supplying values directly:**
 ```bash
 helm install xyo-prod ./charts/xyo-appliance \
   --namespace xyo \
-  --set global.licenseKey="YOUR-ENTERPRISE-LICENSE-KEY"
+  --set global.licenseKey="YOUR-ENTERPRISE-LICENSE-KEY" \
+  --set postgresql.auth.password="$(openssl rand -base64 24)"
 ```
 
 ### 3. Verify Installation
@@ -182,7 +214,7 @@ This chart is pre-configured to comply with **NIST SP 800-190**, **CIS Kubernete
 | :--- | :--- | :--- |
 | `global.imageRegistry` | Global container registry hostname | `cr.syniol.com` |
 | `global.imagePullSecrets` | Array of secret names for pulling private images | `[{name: syniol-registry-secret}]` |
-| `global.licenseKey` | Enterprise appliance license key | `""` |
+| `global.licenseKey` | Enterprise appliance licence key. **Required** unless `global.existingLicenseSecret` is set | `""` |
 | `global.existingLicenseSecret` | Pre-existing secret name holding license key | `""` |
 | `global.licenseSecretKey` | Key within existing license secret | `"license-key"` |
 
@@ -238,6 +270,8 @@ This chart is pre-configured to comply with **NIST SP 800-190**, **CIS Kubernete
 | `postgresql.enabled` | Deploy embedded PostgreSQL instance | `true` |
 | `postgresql.auth.database` | Database name | `"xyo"` |
 | `postgresql.auth.username` | Database user | `"xyo_user"` |
+| `postgresql.auth.password` | Database password. **Required** unless `postgresql.auth.existingSecret` is set | `""` |
+| `postgresql.auth.existingSecret` | Existing Secret holding the database password | `""` |
 | `postgresql.external.enabled` | Enable external PostgreSQL connection | `false` |
 | `postgresql.external.dsn` | External PostgreSQL connection string (DSN) | `""` |
 | `ingress.enabled` | Enable Ingress controller routing | `false` |

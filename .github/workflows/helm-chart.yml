@@ -1,0 +1,82 @@
+name: Helm Chart
+
+# The chart had no CI at all, so a broken template or a reintroduced credential
+# default would have reached a release unnoticed. These checks encode the
+# behaviour the chart is supposed to have rather than only linting syntax.
+
+on:
+  push:
+    branches: [main]
+    paths: ['charts/**', '.github/workflows/helm-chart.yml']
+  pull_request:
+    branches: [main]
+    paths: ['charts/**', '.github/workflows/helm-chart.yml']
+  workflow_dispatch:
+
+jobs:
+  chart:
+    name: Lint & Credential Policy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: azure/setup-helm@v4
+        with:
+          version: v3.16.3
+
+      - name: Lint
+        run: |
+          helm lint charts/xyo-appliance \
+            --set global.licenseKey=ci \
+            --set postgresql.auth.password=ci
+
+      - name: The chart must ship no credential values
+        run: |
+          pip install pyyaml
+          python3 .github/scripts/check_chart_credentials.py
+
+      - name: Rendering must fail when credentials are absent
+        run: |
+          expect_fail() {
+            local desc="$1"; shift
+            if helm template ci charts/xyo-appliance "$@" >/dev/null 2>&1; then
+              echo "::error::render succeeded but should have failed: $desc"
+              exit 1
+            fi
+            echo "  correctly refused: $desc"
+          }
+          expect_fail "nothing supplied"
+          expect_fail "licence only" --set global.licenseKey=ci
+          expect_fail "database only" --set postgresql.auth.password=ci
+          expect_fail "external database with no dsn or secret" \
+            --set global.licenseKey=ci --set postgresql.external.enabled=true
+
+      - name: Rendering must succeed when credentials are supplied
+        run: |
+          expect_ok() {
+            local desc="$1"; shift
+            if ! helm template ci charts/xyo-appliance "$@" >/dev/null; then
+              echo "::error::render failed but should have succeeded: $desc"
+              exit 1
+            fi
+            echo "  rendered: $desc"
+          }
+          expect_ok "values supplied inline" \
+            --set global.licenseKey=ci --set postgresql.auth.password=ci
+          expect_ok "existing Secrets referenced" \
+            --set global.existingLicenseSecret=lic --set postgresql.auth.existingSecret=db
+          expect_ok "external database with dsn" \
+            --set global.licenseKey=ci --set postgresql.external.enabled=true \
+            --set postgresql.external.dsn=postgres://u:p@h/d
+
+      - name: A rendered chart must not contain the removed defaults
+        run: |
+          rendered=$(helm template ci charts/xyo-appliance \
+            --set global.licenseKey=ci --set postgresql.auth.password=ci)
+          for leaked in xyo_secure_pass XYO-ENT-PROD-LIVE-KEY; do
+            if echo "$rendered" | grep -q "$leaked"; then
+              echo "::error::rendered chart contains the removed default '$leaked'"
+              exit 1
+            fi
+          done
+          echo "No removed defaults present in rendered output"

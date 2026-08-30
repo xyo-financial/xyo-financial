@@ -133,6 +133,48 @@ Resolve License Secret Key
 {{- end }}
 
 {{/*
+Resolve the PostgreSQL password.
+
+Deliberately has no default. A chart that ships working credentials gives every
+operator who does not override them an identically-credentialled database, and
+the value is readable by anyone with the chart. Failing the render is noisy, but
+it is noisy at install time rather than in a deployment review.
+
+Only reached when postgresql.auth.existingSecret is unset, since the secret and
+DSN are only rendered on that branch.
+*/}}
+{{- define "xyo-appliance.postgresPassword" -}}
+{{- required "postgresql.auth.password is required. Set postgresql.auth.existingSecret to reference a Secret you manage, or pass postgresql.auth.password explicitly. See charts/xyo-appliance/README.md." .Values.postgresql.auth.password -}}
+{{- end }}
+
+{{/*
+Resolve the external database DSN.
+
+Same reasoning: when an external database is enabled and no existing Secret is
+named, a DSN must be supplied. Previously an unset DSN silently rendered no
+Secret at all, so the failure surfaced later as a connection error rather than
+as a clear message here.
+*/}}
+{{- define "xyo-appliance.externalDsn" -}}
+{{- required "postgresql.external.dsn is required when postgresql.external.enabled is true. Set postgresql.external.existingSecret to reference a Secret you manage, or pass postgresql.external.dsn explicitly. See charts/xyo-appliance/README.md." .Values.postgresql.external.dsn -}}
+{{- end }}
+
+{{/*
+Assert that a licence has been supplied one way or the other.
+
+required() cannot do this job: the licence Secret only renders when licenseKey
+is truthy, so a required() inside that branch is unreachable. With neither value
+set the chart previously rendered deployments referencing a Secret that was never
+created, so the install failed later with a missing-secret error rather than here
+with an explanation.
+*/}}
+{{- define "xyo-appliance.validateLicense" -}}
+{{- if and (not .Values.global.licenseKey) (not .Values.global.existingLicenseSecret) -}}
+{{- fail "A licence is required. Set global.existingLicenseSecret to reference a Secret you manage, or pass global.licenseKey explicitly. See charts/xyo-appliance/README.md." -}}
+{{- end -}}
+{{- end }}
+
+{{/*
 Resolve Database Secret Name
 */}}
 {{- define "xyo-appliance.dbSecretName" -}}
@@ -158,7 +200,7 @@ Resolve Database DSN
 {{- if .Values.postgresql.external.enabled -}}
 {{- .Values.postgresql.external.dsn -}}
 {{- else -}}
-{{- printf "postgres://%s:%s@%s-postgres:%d/%s?sslmode=disable" .Values.postgresql.auth.username .Values.postgresql.auth.password (include "xyo-appliance.fullname" .) (.Values.postgresql.service.port | int) .Values.postgresql.auth.database -}}
+{{- printf "postgres://%s:%s@%s-postgres:%d/%s?sslmode=disable" .Values.postgresql.auth.username (include "xyo-appliance.postgresPassword" .) (include "xyo-appliance.fullname" .) (.Values.postgresql.service.port | int) .Values.postgresql.auth.database -}}
 {{- end -}}
 {{- end }}
 
