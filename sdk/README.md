@@ -14,6 +14,9 @@ Six SDKs generate their transport layer from the specification and wrap it by ha
 
 ### Supported Language SDKs
 
+> [!NOTE]
+> The **Version** column is updated automatically when a release tag is pushed in the respective SDK repository, so it always reflects the current published release. Do not edit it by hand.
+
 | Language | Repository | Package / Module Name | Generator | Shipped Transport | Version | Status |
 |---|---|---|---|---|---|---|
 | **C++ (C++17)** | [`xyo-financial/sdk-cpp`](https://github.com/xyo-financial/sdk-cpp) | `xyo-sdk` | `cpp-restsdk` *(reference only)* | Hand-written on `cpr` | `v2.1.0` | **Stable** |
@@ -68,7 +71,7 @@ name: Dispatch SDKs Regeneration
 on:
   push:
     tags:
-      - '*'
+      - 'v[0-9]+.[0-9]+.[0-9]+'
   workflow_dispatch:
     inputs:
       tag:
@@ -96,10 +99,13 @@ jobs:
       - name: Dispatch ${{ matrix.repo }}
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.SDK_DISPATCH_TOKEN }}
+          token: ${{ secrets.SDK_DISPATCH_TOKEN || secrets.DISPATCH_TOKEN || secrets.GITHUB_TOKEN }}
           repository: ${{ matrix.repo }}
           event-type: spec_tagged
-          client-payload: '{"tag": "${{ github.ref_name || inputs.tag }}"}'
+          # inputs.tag must come first. github.ref_name is populated on every event,
+          # workflow_dispatch included, so putting it first short-circuits the fallback
+          # and makes the manual input unreachable.
+          client-payload: '{"tag": "${{ inputs.tag || github.ref_name }}"}'
 ```
 
 ### 2. Downstream SDK Consumer (`xyo-financial/sdk-go` example)
@@ -111,7 +117,8 @@ name: Regenerate Go OpenAPI Client
 
 on:
   repository_dispatch:
-    types: [spec_tagged, spec_updated]
+    # specs only ever emits spec_tagged; spec_updated was retired fleet-wide
+    types: [spec_tagged]
   workflow_dispatch:
     inputs:
       spec_tag:
@@ -171,11 +178,14 @@ jobs:
           go build ./...
           go vet ./...
 
-      - name: Commit regenerated client
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
         with:
-          commit_message: "chore: regenerate OpenAPI client from spec ${{ github.event.client_payload.tag || inputs.spec_tag || 'latest' }}"
-          file_pattern: "openapi/**"
+          token: ${{ secrets.SDK_DISPATCH_TOKEN || secrets.GITHUB_TOKEN }}
+          commit-message: "chore: regenerate OpenAPI client from spec ${{ github.event.client_payload.tag || inputs.spec_tag || 'latest' }}"
+          title: "Automated SDK Update"
+          branch: "chore/auto-update-sdk"
+          delete-branch: true
 ```
 
 ---
@@ -192,9 +202,6 @@ To ensure linters do not fail builds on auto-generated code, linter configuratio
 ```yaml
 run:
   timeout: 5m
-  skip-dirs:
-    - openapi
-    - example
 
 linters:
   enable:
