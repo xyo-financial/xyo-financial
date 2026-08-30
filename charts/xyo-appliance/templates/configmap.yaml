@@ -7,9 +7,9 @@ metadata:
 data:
   LOG_LEVEL_GATEWAY: {{ .Values.gateway.env.LOG_LEVEL | default "info" | quote }}
   LOG_LEVEL_ENRICHMENT: {{ .Values.enrichment.env.LOG_LEVEL | default "info" | quote }}
-  LOG_LEVEL_ORACLE: {{ .Values.oracle.env.LOG_LEVEL | default "info" | quote }}
-  LOG_LEVEL_YODA: {{ .Values.yoda.env.LOG_LEVEL | default "info" | quote }}
+  LOG_LEVEL_LEXICON: {{ .Values.lexicon.env.LOG_LEVEL | default "info" | quote }}
+  LOG_LEVEL_ANVIL: {{ .Values.anvil.env.LOG_LEVEL | default "info" | quote }}
   XYO_LOGOS_DIR: {{ .Values.persistence.logos.mountPath | default "/var/lib/xyo/logos" | quote }}
   XYO_ENRICHMENT_ADDR: "{{ include "xyo-appliance.fullname" . }}-enrichment:{{ .Values.enrichment.service.port }}"
-  XYO_ORACLE_ADDR: "{{ include "xyo-appliance.fullname" . }}-oracle:{{ .Values.oracle.service.port }}"
-  XYO_YODA_ADDR: "{{ include "xyo-appliance.fullname" . }}-yoda:{{ .Values.yoda.service.port }}"
+  XYO_LEXICON_ADDR: "{{ include "xyo-appliance.fullname" . }}-lexicon:{{ .Values.lexicon.service.port }}"
+  XYO_ANVIL_ADDR: "{{ include "xyo-appliance.fullname" . }}-anvil:{{ .Values.anvil.service.port }}"

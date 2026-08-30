@@ -29,11 +29,11 @@ flowchart TD
         SvcEnrich --> Enrich["🧠 xyo-enrichment Pods (Replicas: 2+)"]
         Enrich -.->|"Read-Write"| PVC
         
-        SvcEnrich -->|"gRPC :9092"| SvcOracle["⚙️ xyo-oracle Service"]
-        SvcEnrich -->|"gRPC :9093"| SvcYoda["⚙️ xyo-yoda Service"]
+        SvcEnrich -->|"gRPC :9092"| SvcLexicon["⚙️ xyo-lexicon Service"]
+        SvcEnrich -->|"gRPC :9093"| SvcAnvil["⚙️ xyo-anvil Service"]
         
-        SvcOracle --> Oracle["🔮 xyo-oracle (Neural NLP Engine)"]
-        SvcYoda --> Yoda["⚡ xyo-yoda (Merchant Heuristics Engine)"]
+        SvcLexicon --> Lexicon["🧠 xyo-lexicon (Neural NLP Engine)"]
+        SvcAnvil --> Anvil["⚒️ xyo-anvil (Merchant Heuristics Engine)"]
     end
 ```
 
@@ -43,8 +43,8 @@ flowchart TD
 | :--- | :--- | :--- | :--- |
 | **`xyo-gateway`** | `8080` (HTTP) | 2+ (HPA) | High-performance public API endpoint, request routing, caching, and static logo delivery. |
 | **`xyo-enrichment`** | `9091` (gRPC) | 2+ (HPA) | Core orchestration pipeline coordinating machine learning inference and logo resolution. |
-| **`xyo-oracle`** | `9092` (gRPC) | 1+ | Deep neural transaction categorization and multi-lingual payment NLP model. |
-| **`xyo-yoda`** | `9093` (gRPC) | 1+ | Deterministic merchant disambiguation, ISO 18245 MCC classification, and location normalization. |
+| **`xyo-lexicon`** | `9092` (gRPC) | 1+ | Deep neural transaction categorization and multi-lingual payment NLP model. |
+| **`xyo-anvil`** | `9093` (gRPC) | 1+ | Deterministic merchant disambiguation, ISO 18245 MCC classification, and location normalization. |
 | **`xyo-postgres`** | `5432` (TCP) | 1 (or External) | Caching backend and historical transaction intelligence storage. |
 | **`xyo-logos-pvc`** | Shared FS | - | High-IOPS `ReadWriteMany` persistent volume storing enriched merchant brand assets. |
 
@@ -237,7 +237,7 @@ This chart is pre-configured to comply with **NIST SP 800-190**, **CIS Kubernete
 | `gateway.probes.readiness.path` | Readiness health check path | `/readyz` |
 | `gateway.probes.startup.path` | Startup health check path | `/healthz` |
 
-### Enrichment, Oracle, Yoda Parameters
+### Enrichment, Lexicon, Anvil Parameters
 
 | Parameter | Description | Default |
 | :--- | :--- | :--- |
@@ -245,12 +245,12 @@ This chart is pre-configured to comply with **NIST SP 800-190**, **CIS Kubernete
 | `enrichment.service.port` | gRPC service port | `9091` |
 | `enrichment.resources.requests` | CPU/Mem requests | `500m` / `1Gi` |
 | `enrichment.resources.limits` | CPU/Mem limits | `1000m` / `2Gi` |
-| `oracle.replicaCount` | Replicas for neural NLP engine | `1` |
-| `oracle.service.port` | gRPC service port | `9092` |
-| `oracle.resources.limits` | CPU/Mem limits | `1000m` / `2Gi` |
-| `yoda.replicaCount` | Replicas for heuristic engine | `1` |
-| `yoda.service.port` | gRPC service port | `9093` |
-| `yoda.resources.limits` | CPU/Mem limits | `1000m` / `2Gi` |
+| `lexicon.replicaCount` | Replicas for neural NLP engine | `1` |
+| `lexicon.service.port` | gRPC service port | `9092` |
+| `lexicon.resources.limits` | CPU/Mem limits | `1000m` / `2Gi` |
+| `anvil.replicaCount` | Replicas for heuristic engine | `1` |
+| `anvil.service.port` | gRPC service port | `9093` |
+| `anvil.resources.limits` | CPU/Mem limits | `1000m` / `2Gi` |
 
 ### Persistence (Logos PVC)
 

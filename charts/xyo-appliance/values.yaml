@@ -160,15 +160,15 @@ enrichment:
   affinity: {}
 
 ## -----------------------------------------------------------------------------------
-## Oracle Service (Neural Categorization & Deep Transaction NLP Engine)
+## Lexicon Service (Neural Categorization & Deep Transaction NLP Engine)
 ## -----------------------------------------------------------------------------------
-oracle:
+lexicon:
   enabled: true
   replicaCount: 1
 
   image:
     registry: ""
-    repository: "xyo/oracle"
+    repository: "xyo/lexicon"
     tag: "v2.0.0"
     pullPolicy: IfNotPresent
 
@@ -212,15 +212,15 @@ oracle:
   affinity: {}
 
 ## -----------------------------------------------------------------------------------
-## Yoda Service (Deterministic Heuristics, Merchant Disambiguation & Pattern Engine)
+## Anvil Service (Deterministic Heuristics, Merchant Disambiguation & Pattern Engine)
 ## -----------------------------------------------------------------------------------
-yoda:
+anvil:
   enabled: true
   replicaCount: 1
 
   image:
     registry: ""
-    repository: "xyo/yoda"
+    repository: "xyo/anvil"
     tag: "v2.0.0"
     pullPolicy: IfNotPresent
 

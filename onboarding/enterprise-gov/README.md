@@ -11,7 +11,7 @@ The XYO Enrichment Platform is engineered specifically for Tier-1 financial inst
 
 | Pillar | Guarantee | Technical Implementation |
 | :--- | :--- | :--- |
-| **Data Sovereignty & Zero PII Egress** | 100% In-Boundary Execution | Raw transaction strings, account numbers, and financial counterparty data are processed entirely in-memory within your VPC or bare-metal host. **Zero telemetry, Oracle and Yoda models make API calls strictly to endpoints within the client's local deployment region (enforcing Regional Data Sovereignty), and zero PII egress.** |
+| **Data Sovereignty & Zero PII Egress** | 100% In-Boundary Execution | Raw transaction strings, account numbers, and financial counterparty data are processed entirely in-memory within your VPC or bare-metal host. **Zero telemetry, Lexicon and Anvil models make API calls strictly to endpoints within the client's local deployment region (enforcing Regional Data Sovereignty), and zero PII egress.** |
 | **Supply Chain Integrity (Cosign)** | Cryptographic Image Provenance | All OCI container images are signed with Sigstore Cosign at build time and verified against Syniol's public key before deployment. |
 | **Deterministic SLA & High Throughput** | Sub-10ms P99 Latency & 99.999% SLA | Deterministic pattern matching combined with optimized ONNX/TensorRT inference engines deliver over 100,000 enrichments per second with linear horizontal scalability. |
 | **Zero-Trust Hardened Security** | PSS `Restricted` & OpenShift `restricted-v2` | Pods run rootless (`UID:GID 10001:10001`), with immutable read-only root filesystems (`readOnlyRootFilesystem: true`), all Linux capabilities dropped (`drop: ["ALL"]`), and kernel privilege escalation blocked. |
@@ -66,8 +66,8 @@ graph LR
   kubectl create namespace xyo
   kubectl apply -f kubernetes/pv-pvc.yaml
   kubectl apply -f kubernetes/postgres.yaml
-  kubectl apply -f kubernetes/oracle.yaml
-  kubectl apply -f kubernetes/yoda.yaml
+  kubectl apply -f kubernetes/lexicon.yaml
+  kubectl apply -f kubernetes/anvil.yaml
   kubectl apply -f kubernetes/enrichment.yaml
   kubectl apply -f kubernetes/gateway.yaml
   ```
@@ -104,8 +104,8 @@ flowchart LR
     end
     
     subgraph IntelligenceLayer ["Dual Intelligence Engine"]
-        Oracle["🔮 XYO Oracle<br/>• Deterministic Heuristics<br/>• ISO 18245 MCC Matcher<br/>• Port 9092 gRPC"]
-        Yoda["🧠 XYO Yoda<br/>• Neural NLP Categorizer<br/>• Semantic Entity Resolution<br/>• Port 9093 gRPC"]
+        Lexicon["🧠 XYO Lexicon<br/>• Neural NLP Categoriser<br/>• Semantic Entity Resolution<br/>• Port 9092 gRPC"]
+        Anvil["⚒️ XYO Anvil<br/>• Deterministic Heuristics<br/>• ISO 18245 MCC Matcher<br/>• Port 9093 gRPC"]
     end
 
     Client -->|"HTTP/HTTPS :8080"| Gateway
@@ -113,8 +113,8 @@ flowchart LR
     Gateway -.->|"Read-Only"| SSD
     Gateway -->|"gRPC :9091"| Enrichment
     
-    Enrichment -->|"gRPC :9092"| Oracle
-    Enrichment -->|"gRPC :9093"| Yoda
+    Enrichment -->|"gRPC :9092"| Lexicon
+    Enrichment -->|"gRPC :9093"| Anvil
     Enrichment -.->|"Read/Write"| SSD
 ```
 
@@ -122,13 +122,13 @@ The platform operates as a modular, decoupled microservice suite:
 
 - **XYO Gateway**: Client-facing `HTTP/REST` entry point providing rate limiting, API token authentication, request validation, logo asset delivery, and caching.
 - **XYO Enrichment**: Core orchestrator and internal `gRPC/RPC` server coordinating inference pipelines across downstream pattern matchers and AI models.
-- **XYO Oracle**: High-speed internal pattern matcher database and deterministic rules engine (*"The great Oracle knows everything"*).
-- **XYO Yoda**: Machine learning inference service for high-dimensional semantic categorization and counterparty entity resolution (*"Yoda is wise"*).
+- **XYO Lexicon**: Machine learning inference service for high-dimensional semantic categorisation and counterparty entity resolution.
+- **XYO Anvil**: High-speed internal pattern matcher database and deterministic rules engine.
 - **PostgreSQL**: Transactional query cache and audit persistence backend. *(Note: The bundled single-pod deployment is optimized for air-gapped POCs; for production workloads >5,000 TPS, connect to a managed HA cluster such as AWS Aurora Multi-AZ, GCP Cloud SQL, or CloudNativePG with PgBouncer connection pooling).*
 - **SSD Storage**: High-IOPS persistent SSD volume for merchant asset caching and logos *(NVMe recommended)*.
 
 ### ⚡ Reliability, Circuit Breaking & Observability
-* **Automated Latency Budgeting & Fallback:** To maintain strict sub-15ms SLAs in the payment authorization path, the `Enrichment` orchestrator implements automatic circuit breaking. If `Yoda` (neural inference) exceeds its latency budget (>8ms) under high load, the engine seamlessly falls back to `Oracle` (deterministic rule matching).
+* **Automated Latency Budgeting & Fallback:** To maintain strict sub-15ms SLAs in the payment authorization path, the `Enrichment` orchestrator implements automatic circuit breaking. If `Lexicon` (neural inference) exceeds its latency budget (>8ms) under high load, the engine seamlessly falls back to `Anvil` (deterministic rule matching).
 * **Distributed Tracing & Correlation:** Standard W3C `traceparent` headers and `X-Correlation-ID` are propagated across all microservices for end-to-end tracing across APM tools (Datadog, Dynatrace, OpenTelemetry, Splunk).
 
 ---
@@ -146,8 +146,8 @@ flowchart TD
     subgraph PrivateSubnet ["Secure Private Subnet (Namespace: xyo)"]
         Gateway["XYO Gateway<br/>Port 8080 HTTP"]
         Enrichment["XYO Enrichment<br/>Port 9091 gRPC"]
-        Oracle["XYO Oracle<br/>Port 9092 gRPC"]
-        Yoda["XYO Yoda<br/>Port 9093 gRPC"]
+        Lexicon["XYO Lexicon<br/>Port 9092 gRPC"]
+        Anvil["XYO Anvil<br/>Port 9093 gRPC"]
         DB[("PostgreSQL<br/>Port 5432 TCP")]
         SSD[("SSD Volume: Logos<br/>ReadWriteMany")]
     end
@@ -155,8 +155,8 @@ flowchart TD
     Client -->|"HTTP: 8080"| Gateway
     Gateway -->|"gRPC: 9091"| Enrichment
     Gateway -->|"TCP: 5432"| DB
-    Enrichment -->|"gRPC: 9092"| Oracle
-    Enrichment -->|"gRPC: 9093"| Yoda
+    Enrichment -->|"gRPC: 9092"| Lexicon
+    Enrichment -->|"gRPC: 9093"| Anvil
     Enrichment -->|"Read/Write"| SSD
     Gateway -.->|"Read-Only"| SSD
 ```
@@ -166,8 +166,8 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **XYO Gateway** | `8080` | HTTP / REST | Client-Facing | Serves the REST API for transaction enrichment. | `/healthz`, `/readyz` |
 | **XYO Enrichment** | `9091` | gRPC / HTTP | Internal Only | Internal RPC coordinator between AI models and caches. | `/healthz`, `/readyz` |
-| **XYO Oracle** | `9092` | gRPC / HTTP | Internal Only | Internal RPC pattern matcher database. | `/healthz`, `/readyz` |
-| **XYO Yoda** | `9093` | gRPC / HTTP | Internal Only | Internal RPC machine learning categorization service. | `/healthz`, `/readyz` |
+| **XYO Lexicon** | `9092` | gRPC / HTTP | Internal Only | Internal RPC machine learning categorisation service. | `/healthz`, `/readyz` |
+| **XYO Anvil** | `9093` | gRPC / HTTP | Internal Only | Internal RPC pattern matcher database. | `/healthz`, `/readyz` |
 | **PostgreSQL** | `5432` | TCP | Internal Only | Default transactional and cache database. | `pg_isready` |
 
 > 🚨 **Firewall Rule**: Ensure that internal ports `9091`, `9092`, and `9093` are blocked from receiving external ingress traffic, and are only accessible by containers within the private network subnet.
@@ -184,8 +184,8 @@ Official Docker images are hosted on Syniol’s private OCI registry:
 - **Images**:
   - `cr.syniol.com/xyo/gateway:v2.0.0`
   - `cr.syniol.com/xyo/enrichment:v2.0.0`
-  - `cr.syniol.com/xyo/oracle:v2.0.0`
-  - `cr.syniol.com/xyo/yoda:v2.0.0`
+  - `cr.syniol.com/xyo/lexicon:v2.0.0`
+  - `cr.syniol.com/xyo/anvil:v2.0.0`
 
 Authenticate locally or in your deployment pipelines:
 ```bash
@@ -201,8 +201,8 @@ curl -s https://downloads.syniol.com/xyo/cosign.pub -o cosign.pub
 # Verify image signature
 cosign verify --key cosign.pub cr.syniol.com/xyo/gateway:v2.0.0
 cosign verify --key cosign.pub cr.syniol.com/xyo/enrichment:v2.0.0
-cosign verify --key cosign.pub cr.syniol.com/xyo/oracle:v2.0.0
-cosign verify --key cosign.pub cr.syniol.com/xyo/yoda:v2.0.0
+cosign verify --key cosign.pub cr.syniol.com/xyo/lexicon:v2.0.0
+cosign verify --key cosign.pub cr.syniol.com/xyo/anvil:v2.0.0
 ```
 
 ### 🚢 Air-Gapped Private Registry Mirroring (Harbor / Artifactory / ECR)
@@ -211,8 +211,8 @@ To mirror signed images into your internal sovereign registry using `skopeo` or 
 # Example using skopeo to copy directly to internal registry:
 skopeo copy --all docker://cr.syniol.com/xyo/gateway:v2.0.0 docker://registry.internal.bank.com/xyo/gateway:v2.0.0
 skopeo copy --all docker://cr.syniol.com/xyo/enrichment:v2.0.0 docker://registry.internal.bank.com/xyo/enrichment:v2.0.0
-skopeo copy --all docker://cr.syniol.com/xyo/oracle:v2.0.0 docker://registry.internal.bank.com/xyo/oracle:v2.0.0
-skopeo copy --all docker://cr.syniol.com/xyo/yoda:v2.0.0 docker://registry.internal.bank.com/xyo/yoda:v2.0.0
+skopeo copy --all docker://cr.syniol.com/xyo/lexicon:v2.0.0 docker://registry.internal.bank.com/xyo/lexicon:v2.0.0
+skopeo copy --all docker://cr.syniol.com/xyo/anvil:v2.0.0 docker://registry.internal.bank.com/xyo/anvil:v2.0.0
 ```
 
 ### 🔐 Enterprise Secrets Management (Vault / ESO)

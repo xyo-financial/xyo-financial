@@ -40,16 +40,16 @@ spec:
                 configMapKeyRef:
                   name: {{ include "xyo-appliance.fullname" . }}-config
                   key: LOG_LEVEL_ENRICHMENT
-            - name: XYO_ORACLE_ADDR
+            - name: XYO_LEXICON_ADDR
               valueFrom:
                 configMapKeyRef:
                   name: {{ include "xyo-appliance.fullname" . }}-config
-                  key: XYO_ORACLE_ADDR
-            - name: XYO_YODA_ADDR
+                  key: XYO_LEXICON_ADDR
+            - name: XYO_ANVIL_ADDR
               valueFrom:
                 configMapKeyRef:
                   name: {{ include "xyo-appliance.fullname" . }}-config
-                  key: XYO_YODA_ADDR
+                  key: XYO_ANVIL_ADDR
             - name: XYO_LOGOS_DIR
               valueFrom:
                 configMapKeyRef:

@@ -1,5 +1,5 @@
 # ==============================================================================
-# XYO Enrichment Platform - Oracle Rules & Pattern Matcher
+# XYO Enrichment Platform - Lexicon Neural NLP Engine
 # Tier-1 Enterprise & High-Assurance Compliance:
 # - Pod Security Standards (PSS) Restricted
 # - OpenShift Security Context Constraints (SCC) restricted-v2
@@ -12,11 +12,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: xyo-oracle
+  name: xyo-lexicon
   namespace: xyo
   labels:
-    app: xyo-oracle
-    app.kubernetes.io/name: xyo-oracle
+    app: xyo-lexicon
+    app.kubernetes.io/name: xyo-lexicon
     app.kubernetes.io/component: rules-engine
     app.kubernetes.io/part-of: xyo-appliance
     app.kubernetes.io/version: "v2.0.0"
@@ -24,12 +24,12 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: xyo-oracle
+      app: xyo-lexicon
   template:
     metadata:
       labels:
-        app: xyo-oracle
-        app.kubernetes.io/name: xyo-oracle
+        app: xyo-lexicon
+        app.kubernetes.io/name: xyo-lexicon
         app.kubernetes.io/component: rules-engine
         app.kubernetes.io/part-of: xyo-appliance
     spec:
@@ -43,8 +43,8 @@ spec:
       imagePullSecrets:
         - name: syniol-registry-secret
       containers:
-        - name: oracle
-          image: cr.syniol.com/xyo/oracle:v2.0.0
+        - name: lexicon
+          image: cr.syniol.com/xyo/lexicon:v2.0.0
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
@@ -104,11 +104,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: xyo-oracle
+  name: xyo-lexicon
   namespace: xyo
   labels:
-    app: xyo-oracle
-    app.kubernetes.io/name: xyo-oracle
+    app: xyo-lexicon
+    app.kubernetes.io/name: xyo-lexicon
     app.kubernetes.io/component: rules-engine
     app.kubernetes.io/part-of: xyo-appliance
 spec:
@@ -118,5 +118,5 @@ spec:
       targetPort: 9092
       name: grpc
   selector:
-    app: xyo-oracle
+    app: xyo-lexicon
 

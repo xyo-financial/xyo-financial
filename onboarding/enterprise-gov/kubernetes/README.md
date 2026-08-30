@@ -17,8 +17,8 @@ flowchart TD
     subgraph K8sNamespace ["Kubernetes Namespace: xyo (PSS Restricted)"]
         GW["xyo-gateway<br/>Replicas: 2 | Port 8080"]
         ENR["xyo-enrichment<br/>Replicas: 2 | Port 9091"]
-        ORA["xyo-oracle<br/>Replicas: 1 | Port 9092"]
-        YOD["xyo-yoda<br/>Replicas: 1 | Port 9093"]
+        ORA["xyo-lexicon<br/>Replicas: 1 | Port 9092"]
+        YOD["xyo-anvil<br/>Replicas: 1 | Port 9093"]
         PG[("xyo-postgres<br/>Replicas: 1 | Port 5432")]
         
         PVC_LOGOS[("xyo-logos-pvc<br/>ReadWriteMany: 10Gi")]
@@ -145,8 +145,8 @@ Apply the manifests in sequential order to ensure upstream dependencies initiali
 kubectl apply -f postgres.yaml
 
 # 2. Deploy rules engine and machine learning inference services
-kubectl apply -f oracle.yaml
-kubectl apply -f yoda.yaml
+kubectl apply -f lexicon.yaml
+kubectl apply -f anvil.yaml
 
 # 3. Deploy enrichment orchestration coordinator
 kubectl apply -f enrichment.yaml
@@ -174,9 +174,9 @@ xyo-enrichment-7d94cfbb-4f89a     1/1     Running   0          45s
 xyo-enrichment-7d94cfbb-8c2kl     1/1     Running   0          45s
 xyo-gateway-65c8f8b89d-7r4w2      1/1     Running   0          30s
 xyo-gateway-65c8f8b89d-9q1nm      1/1     Running   0          30s
-xyo-oracle-56d6b7b75f-2zxq8       1/1     Running   0          60s
+xyo-lexicon-56d6b7b75f-2zxq8       1/1     Running   0          60s
 xyo-postgres-5c4d9bc99b-5vljk     1/1     Running   0          75s
-xyo-yoda-747f4f9f68-6pxvd         1/1     Running   0          60s
+xyo-anvil-747f4f9f68-6pxvd         1/1     Running   0          60s
 ```
 
 ### 2. Verify Services & Endpoints

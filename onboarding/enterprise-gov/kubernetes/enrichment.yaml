@@ -60,10 +60,10 @@ spec:
               value: "info"
             - name: XYO_BIND_ADDR
               value: "0.0.0.0:9091"
-            - name: XYO_ORACLE_ADDR
-              value: "xyo-oracle:9092"
-            - name: XYO_YODA_ADDR
-              value: "xyo-yoda:9093"
+            - name: XYO_LEXICON_ADDR
+              value: "xyo-lexicon:9092"
+            - name: XYO_ANVIL_ADDR
+              value: "xyo-anvil:9093"
             - name: XYO_LOGOS_DIR
               value: "/var/lib/xyo/logos"
             - name: XYO_LICENSE_KEY
