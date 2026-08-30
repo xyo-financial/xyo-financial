@@ -14,7 +14,7 @@ To eliminate human error and synchronization drift between backend APIs and clie
 
 ```mermaid
 flowchart TD
-    Spec["Canonical OpenAPI 3.0.3 Spec<br/>(xyo-financial/specs)"]
+    Spec["Canonical OpenAPI 3.0 Spec<br/>(xyo-financial/specs)"]
     
     subgraph Pipeline ["Automated CI/CD Sync (generate.yml)"]
         GenCLI["@openapitools/openapi-generator-cli"]
