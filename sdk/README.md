@@ -8,19 +8,21 @@
 
 ## 🏛️ Ecosystem Overview
 
-The **XYO Financial SDK Suite** provides official, production-grade client libraries across multiple programming languages. All SDKs are deterministically generated from the canonical OpenAPI 3.0 specification maintained in [`xyo-financial/specs`](https://github.com/xyo-financial/specs), ensuring zero schema drift across all client implementations.
+The **XYO Financial SDK Suite** provides official, production-grade client libraries across multiple programming languages. Every SDK synchronises with the canonical OpenAPI 3.0 specification maintained in [`xyo-financial/specs`](https://github.com/xyo-financial/specs), so the wire contract stays consistent across all client implementations.
+
+Six SDKs generate their transport layer from the specification and wrap it by hand. **C++ is the exception**: its transport is hand-written on `cpr`, and the generated layer is kept as a development reference that is never built, linked or shipped. See [`sdk-cpp#29`](https://github.com/xyo-financial/sdk-cpp/issues/29).
 
 ### Supported Language SDKs
 
-| Language | Repository | Package / Module Name | Generated Engine | Version | Status |
-|---|---|---|---|---|---|
-| **C++ (C++17)** | [`xyo-financial/sdk-cpp`](https://github.com/xyo-financial/sdk-cpp) | `xyo-sdk` | `cpp-restsdk` | `v2.1.0` | **Stable** |
-| **Rust** | [`xyo-financial/sdk-rust`](https://github.com/xyo-financial/sdk-rust) | `xyo-sdk` | `rust` (`openapi-client`) | `v2.1.0` | **Stable** |
-| **Go (Golang)** | [`xyo-financial/sdk-go`](https://github.com/xyo-financial/sdk-go) | `github.com/xyo-financial/sdk-go/v2` | `go` (`openapi` package) | `v2.1.1` | **Stable** |
-| **Java (Java 17+)** | [`xyo-financial/sdk-java`](https://github.com/xyo-financial/sdk-java) | `com.xyo.financial:xyo-sdk` | `java` (Native library) | `v2.1.0` | **Stable** |
-| **.NET / C# (.NET 8+)** | [`xyo-financial/sdk-dotnet`](https://github.com/xyo-financial/sdk-dotnet) | `Xyo.Sdk` | `csharp-netcore` | `v2.1.0` | **Stable** |
-| **Python (3.9+)** | [`xyo-financial/sdk-python`](https://github.com/xyo-financial/sdk-python) | `xyo-sdk` | `python` | `v2.1.0` | **Stable** |
-| **Node.js / TypeScript** | [`xyo-financial/sdk-node`](https://github.com/xyo-financial/sdk-node) | `xyo-sdk` | `typescript-fetch` | `v2.1.0` | **Stable** |
+| Language | Repository | Package / Module Name | Generator | Shipped Transport | Version | Status |
+|---|---|---|---|---|---|---|
+| **C++ (C++17)** | [`xyo-financial/sdk-cpp`](https://github.com/xyo-financial/sdk-cpp) | `xyo-sdk` | `cpp-restsdk` *(reference only)* | Hand-written on `cpr` | `v2.1.0` | **Stable** |
+| **Rust** | [`xyo-financial/sdk-rust`](https://github.com/xyo-financial/sdk-rust) | `xyo-sdk` | `rust` (`openapi-client`) | Generated | `v2.1.0` | **Stable** |
+| **Go (Golang)** | [`xyo-financial/sdk-go`](https://github.com/xyo-financial/sdk-go) | `github.com/xyo-financial/sdk-go/v2` | `go` (`openapi` package) | Generated | `v2.1.1` | **Stable** |
+| **Java (Java 17+)** | [`xyo-financial/sdk-java`](https://github.com/xyo-financial/sdk-java) | `com.xyo.financial:xyo-sdk` | `java` (Native library) | Generated | `v2.1.0` | **Stable** |
+| **.NET / C# (.NET 8+)** | [`xyo-financial/sdk-dotnet`](https://github.com/xyo-financial/sdk-dotnet) | `Xyo.Sdk` | `csharp` | Generated | `v2.1.0` | **Stable** |
+| **Python (3.9+)** | [`xyo-financial/sdk-python`](https://github.com/xyo-financial/sdk-python) | `xyo-sdk` | `python` | Generated | `v2.1.0` | **Stable** |
+| **Node.js / TypeScript** | [`xyo-financial/sdk-node`](https://github.com/xyo-financial/sdk-node) | `xyo-sdk` | `typescript-fetch` | Generated | `v2.1.0` | **Stable** |
 
 ---
 

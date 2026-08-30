@@ -92,11 +92,11 @@ Regardless of language, all XYO client libraries expose a unified 3-operation su
 
 | Language | Generated Target | Wrapper Implementation | Key Concurrency / Transport Model |
 |---|---|---|---|
-| **C++ (C++17)** | `cpp-restsdk` | `xyo::Client` with PIMPL | Header isolation via `std::unique_ptr<Impl>` + `cpprestsdk` |
+| **C++ (C++17)** | `cpp-restsdk` *(reference only, not built or shipped)* | `xyo::Client` with PIMPL, hand-written transport | Header isolation via `std::unique_ptr<Impl>` + `cpr` / libcurl |
 | **Rust** | `rust` (`openapi-client`) | `Client` in `src/client.rs` | Async `tokio` runtime + `reqwest` with `rustls` |
 | **Go (Golang)** | `go` (`openapi` package) | `Client` in `client.go` | `context.Context` cancellation & native `net/http` connection pooling |
 | **Java (Java 17+)** | `java` (Native library) | `XyoClient` in `xyo-sdk` | Java 17+ `java.net.http.HttpClient` + fluent builders |
-| **.NET / C# (.NET 8+)** | `csharp-netcore` | `XyoClient` in `src/` | Pooled `SocketsHttpHandler` + Polly resilient retry policies |
+| **.NET / C# (.NET 8+)** | `csharp` | `XyoClient` in `src/` | Pooled `SocketsHttpHandler` + Polly resilient retry policies |
 | **Python (3.9+)** | `python` | `Client` & `AsyncClient` | `httpx` sync/async transport + thread-offloaded decompression |
 | **Node.js / TypeScript** | `typescript-fetch` | `XYOClient` in `src/index.ts` | Native Web `fetch` (Zero runtime dependencies) |
 
