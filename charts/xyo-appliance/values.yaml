@@ -10,9 +10,11 @@ global:
   imagePullSecrets:
     - name: "syniol-registry-secret"
   
-  # XYO Enterprise Appliance Activation License Key
-  # If licenseKey is set, a Secret will automatically be created unless existingLicenseSecret is specified.
-  licenseKey: "XYO-ENT-PROD-LIVE-KEY"
+  # XYO Enterprise Appliance Activation License Key.
+  # Required, and deliberately empty: the chart ships no credentials. Supply it at
+  # install time, or set existingLicenseSecret to reference a Secret you manage.
+  # If set here, a Secret is created for you unless existingLicenseSecret is specified.
+  licenseKey: ""
   
   # Reference an existing Secret containing the license key instead of managing it through Helm values
   existingLicenseSecret: ""
@@ -293,7 +295,10 @@ postgresql:
   auth:
     database: "xyo"
     username: "xyo_user"
-    password: "xyo_secure_pass"
+    # Required, and deliberately empty: the chart ships no credentials. Supply it at
+    # install time, or set existingSecret to reference a Secret you manage. A rendered
+    # chart with no credentials supplied fails with a message naming the missing value.
+    password: ""
     existingSecret: ""
     secretKeys:
       password: "postgres-password"
