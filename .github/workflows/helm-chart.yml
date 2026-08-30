@@ -69,6 +69,49 @@ jobs:
             --set global.licenseKey=ci --set postgresql.external.enabled=true \
             --set postgresql.external.dsn=postgres://u:p@h/d
 
+      - name: Engine names must not regress
+        run: |
+          # The engines were renamed by role: lexicon is semantic, anvil is
+          # deterministic. Oracle Corporation products are a genuine exception.
+          if grep -rinPq '(?<![A-Za-z])(yoda|oracle)(?![A-Za-z])' charts onboarding COMPLIANCE.md \
+               --exclude-dir=.git 2>/dev/null; then
+            unexpected=$(grep -rinP '(?<![A-Za-z])(yoda|oracle)(?![A-Za-z])' charts onboarding COMPLIANCE.md \
+              --exclude-dir=.git | grep -v 'Oracle Cloud' || true)
+            if [ -n "$unexpected" ]; then
+              echo "$unexpected"
+              echo "::error::old engine names are back; use lexicon (semantic) and anvil (deterministic)"
+              exit 1
+            fi
+          fi
+          echo "No stale engine names"
+
+      - name: Deployments must not reference missing ConfigMap keys
+        run: |
+          # The rename touches ConfigMap keys the deployments consume, so a
+          # half-applied rename shows up here rather than as a CrashLoopBackOff.
+          pip install pyyaml
+          helm template ci charts/xyo-appliance \
+            --set global.licenseKey=ci --set postgresql.auth.password=ci > /tmp/rendered.yaml
+          python3 - <<'PYEOF'
+          import yaml, sys
+          docs = [d for d in yaml.safe_load_all(open('/tmp/rendered.yaml')) if d]
+          cm = {d['metadata']['name']: set((d.get('data') or {}).keys())
+                for d in docs if d.get('kind') == 'ConfigMap'}
+          missing = []
+          for d in docs:
+              if d.get('kind') != 'Deployment':
+                  continue
+              for c in d['spec']['template']['spec'].get('containers', []):
+                  for e in c.get('env', []):
+                      ref = (e.get('valueFrom') or {}).get('configMapKeyRef')
+                      if ref and ref['key'] not in cm.get(ref['name'], set()):
+                          missing.append(f"{d['metadata']['name']} -> {ref['name']}/{ref['key']}")
+          if missing:
+              print("dangling configMapKeyRef:", *missing, sep="\n  ")
+              sys.exit(1)
+          print("Every configMapKeyRef resolves")
+          PYEOF
+
       - name: A rendered chart must not contain the removed defaults
         run: |
           rendered=$(helm template ci charts/xyo-appliance \

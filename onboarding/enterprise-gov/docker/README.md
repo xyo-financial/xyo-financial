@@ -39,8 +39,8 @@ flowchart TD
     subgraph DockerNet ["Docker Secure Network (xyo-network) (Non-Root UID 10001)"]
         Gateway["xyo-gateway:v2.0.0<br/>• Read-Only Rootfs<br/>• Drop All Caps<br/>• Port 8080"]
         Enrichment["xyo-enrichment:v2.0.0<br/>• Read-Only Rootfs<br/>• Port 9091"]
-        Oracle["xyo-oracle:v2.0.0<br/>• Deterministic Heuristics<br/>• Port 9092"]
-        Yoda["xyo-yoda:v2.0.0<br/>• ML Categorizer<br/>• Port 9093"]
+        Lexicon["xyo-lexicon:v2.0.0<br/>• Neural NLP Categoriser<br/>• Port 9092"]
+        Anvil["xyo-anvil:v2.0.0<br/>• Deterministic Heuristics<br/>• Port 9093"]
         DB[("xyo-postgres<br/>• Non-Root UID 70<br/>• Port 5432")]
     end
 
@@ -51,8 +51,8 @@ flowchart TD
     Client -->|"HTTP 8080"| Gateway
     Gateway -->|"gRPC 9091"| Enrichment
     Gateway -->|"TCP 5432"| DB
-    Enrichment -->|"gRPC 9092"| Oracle
-    Enrichment -->|"gRPC 9093"| Yoda
+    Enrichment -->|"gRPC 9092"| Lexicon
+    Enrichment -->|"gRPC 9093"| Anvil
     Enrichment -->|"Read/Write"| SSD
     Gateway -.->|"Read-Only"| SSD
 ```
@@ -129,11 +129,11 @@ cosign verify --key cosign.pub cr.syniol.com/xyo/gateway:v2.0.0
 # Verify XYO Enrichment
 cosign verify --key cosign.pub cr.syniol.com/xyo/enrichment:v2.0.0
 
-# Verify XYO Oracle
-cosign verify --key cosign.pub cr.syniol.com/xyo/oracle:v2.0.0
+# Verify XYO Lexicon
+cosign verify --key cosign.pub cr.syniol.com/xyo/lexicon:v2.0.0
 
-# Verify XYO Yoda
-cosign verify --key cosign.pub cr.syniol.com/xyo/yoda:v2.0.0
+# Verify XYO Anvil
+cosign verify --key cosign.pub cr.syniol.com/xyo/anvil:v2.0.0
 ```
 
 **Expected Successful Output:**
@@ -239,12 +239,12 @@ docker login cr.syniol.com -u <your-client-id> -p <your-client-secret>
 export XYO_VERSION="v2.0.0"
 docker pull cr.syniol.com/xyo/gateway:${XYO_VERSION}
 docker pull cr.syniol.com/xyo/enrichment:${XYO_VERSION}
-docker pull cr.syniol.com/xyo/oracle:${XYO_VERSION}
-docker pull cr.syniol.com/xyo/yoda:${XYO_VERSION}
+docker pull cr.syniol.com/xyo/lexicon:${XYO_VERSION}
+docker pull cr.syniol.com/xyo/anvil:${XYO_VERSION}
 docker pull postgres:15-alpine
 
 # 3. Cryptographically verify each image using Cosign
-for img in gateway enrichment oracle yoda; do
+for img in gateway enrichment lexicon anvil; do
   cosign verify --key cosign.pub cr.syniol.com/xyo/${img}:${XYO_VERSION} || exit 1
 done
 ```
@@ -257,8 +257,8 @@ Package the verified images into a unified archive:
 docker save \
   cr.syniol.com/xyo/gateway:${XYO_VERSION} \
   cr.syniol.com/xyo/enrichment:${XYO_VERSION} \
-  cr.syniol.com/xyo/oracle:${XYO_VERSION} \
-  cr.syniol.com/xyo/yoda:${XYO_VERSION} \
+  cr.syniol.com/xyo/lexicon:${XYO_VERSION} \
+  cr.syniol.com/xyo/anvil:${XYO_VERSION} \
   postgres:15-alpine \
   -o xyo-stack-${XYO_VERSION}.tar
 
@@ -286,15 +286,15 @@ export INTERNAL_REGISTRY="harbor.internal.bank.com/xyo"
 
 docker tag cr.syniol.com/xyo/gateway:${XYO_VERSION} ${INTERNAL_REGISTRY}/gateway:${XYO_VERSION}
 docker tag cr.syniol.com/xyo/enrichment:${XYO_VERSION} ${INTERNAL_REGISTRY}/enrichment:${XYO_VERSION}
-docker tag cr.syniol.com/xyo/oracle:${XYO_VERSION} ${INTERNAL_REGISTRY}/oracle:${XYO_VERSION}
-docker tag cr.syniol.com/xyo/yoda:${XYO_VERSION} ${INTERNAL_REGISTRY}/yoda:${XYO_VERSION}
+docker tag cr.syniol.com/xyo/lexicon:${XYO_VERSION} ${INTERNAL_REGISTRY}/lexicon:${XYO_VERSION}
+docker tag cr.syniol.com/xyo/anvil:${XYO_VERSION} ${INTERNAL_REGISTRY}/anvil:${XYO_VERSION}
 docker tag postgres:15-alpine ${INTERNAL_REGISTRY}/postgres:15-alpine
 
 # 4. Push to enterprise registry
 docker push ${INTERNAL_REGISTRY}/gateway:${XYO_VERSION}
 docker push ${INTERNAL_REGISTRY}/enrichment:${XYO_VERSION}
-docker push ${INTERNAL_REGISTRY}/oracle:${XYO_VERSION}
-docker push ${INTERNAL_REGISTRY}/yoda:${XYO_VERSION}
+docker push ${INTERNAL_REGISTRY}/lexicon:${XYO_VERSION}
+docker push ${INTERNAL_REGISTRY}/anvil:${XYO_VERSION}
 docker push ${INTERNAL_REGISTRY}/postgres:15-alpine
 ```
 
@@ -306,8 +306,8 @@ To maintain verification capability inside the air-gapped network:
 # Re-copy signatures and SBOM attestations to your internal registry
 cosign copy cr.syniol.com/xyo/gateway:${XYO_VERSION} ${INTERNAL_REGISTRY}/gateway:${XYO_VERSION}
 cosign copy cr.syniol.com/xyo/enrichment:${XYO_VERSION} ${INTERNAL_REGISTRY}/enrichment:${XYO_VERSION}
-cosign copy cr.syniol.com/xyo/oracle:${XYO_VERSION} ${INTERNAL_REGISTRY}/oracle:${XYO_VERSION}
-cosign copy cr.syniol.com/xyo/yoda:${XYO_VERSION} ${INTERNAL_REGISTRY}/yoda:${XYO_VERSION}
+cosign copy cr.syniol.com/xyo/lexicon:${XYO_VERSION} ${INTERNAL_REGISTRY}/lexicon:${XYO_VERSION}
+cosign copy cr.syniol.com/xyo/anvil:${XYO_VERSION} ${INTERNAL_REGISTRY}/anvil:${XYO_VERSION}
 
 # Internal teams verify against internal registry
 cosign verify --key cosign.pub ${INTERNAL_REGISTRY}/gateway:${XYO_VERSION}

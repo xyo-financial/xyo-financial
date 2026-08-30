@@ -1,5 +1,5 @@
 # ==============================================================================
-# XYO Enrichment Platform - Yoda Machine Learning Engine
+# XYO Enrichment Platform - Anvil Rules & Pattern Matcher
 # Tier-1 Enterprise & High-Assurance Compliance:
 # - Pod Security Standards (PSS) Restricted
 # - OpenShift Security Context Constraints (SCC) restricted-v2
@@ -12,11 +12,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: xyo-yoda
+  name: xyo-anvil
   namespace: xyo
   labels:
-    app: xyo-yoda
-    app.kubernetes.io/name: xyo-yoda
+    app: xyo-anvil
+    app.kubernetes.io/name: xyo-anvil
     app.kubernetes.io/component: ml-engine
     app.kubernetes.io/part-of: xyo-appliance
     app.kubernetes.io/version: "v2.0.0"
@@ -24,12 +24,12 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: xyo-yoda
+      app: xyo-anvil
   template:
     metadata:
       labels:
-        app: xyo-yoda
-        app.kubernetes.io/name: xyo-yoda
+        app: xyo-anvil
+        app.kubernetes.io/name: xyo-anvil
         app.kubernetes.io/component: ml-engine
         app.kubernetes.io/part-of: xyo-appliance
     spec:
@@ -43,8 +43,8 @@ spec:
       imagePullSecrets:
         - name: syniol-registry-secret
       containers:
-        - name: yoda
-          image: cr.syniol.com/xyo/yoda:v2.0.0
+        - name: anvil
+          image: cr.syniol.com/xyo/anvil:v2.0.0
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
@@ -104,11 +104,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: xyo-yoda
+  name: xyo-anvil
   namespace: xyo
   labels:
-    app: xyo-yoda
-    app.kubernetes.io/name: xyo-yoda
+    app: xyo-anvil
+    app.kubernetes.io/name: xyo-anvil
     app.kubernetes.io/component: ml-engine
     app.kubernetes.io/part-of: xyo-appliance
 spec:
@@ -118,5 +118,5 @@ spec:
       targetPort: 9093
       name: grpc
   selector:
-    app: xyo-yoda
+    app: xyo-anvil
 

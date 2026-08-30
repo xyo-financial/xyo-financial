@@ -14,7 +14,7 @@ The **XYO Financial Transaction Enrichment Platform** is engineered to meet the 
 Because financial transaction narratives contain sensitive personal identifiable information (PII), payment card industry data (PAN/track data), and counterparty banking metadata, XYO enforces a **Zero-Egress / Sovereign Boundary Architecture**:
 
 * **100% In-Boundary Execution:** In on-premises and private VPC deployments, raw transaction narratives, account identifiers, and enriched outputs are processed entirely in-memory within the client's sovereign security perimeter.
-* **Zero Telemetry & Regional Model Invocations:** Oracle and Yoda models make API calls strictly to endpoints within the client's local deployment region (enforcing Regional Data Sovereignty). Structured operational logging and distributed tracing are used, but zero raw customer transaction data or PII is ever logged (enforced via masking/redaction). No statistical telemetry is ever transmitted to third-party clouds or overseas jurisdictions.
+* **Zero Telemetry & Regional Model Invocations:** Lexicon and Anvil models make API calls strictly to endpoints within the client's local deployment region (enforcing Regional Data Sovereignty). Structured operational logging and distributed tracing are used, but zero raw customer transaction data or PII is ever logged (enforced via masking/redaction). No statistical telemetry is ever transmitted to third-party clouds or overseas jurisdictions.
 * **Deterministic Cryptographic Provenance:** Signed container images (Sigstore Cosign), rootless execution, read-only filesystems, and FIPS 140-3 validated encryption ensure tamper-evident runtime integrity.
 
 ---

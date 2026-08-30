@@ -59,11 +59,11 @@ services:
       start_period: 10s
 
   # ----------------------------------------------------------------------------
-  # XYO Oracle: Deterministic pattern matching & rules engine
+  # XYO Lexicon: Neural categorisation & deep transaction NLP engine
   # ----------------------------------------------------------------------------
-  xyo-oracle:
-    image: cr.syniol.com/xyo/oracle:v2.0.0
-    container_name: xyo-oracle
+  xyo-lexicon:
+    image: cr.syniol.com/xyo/lexicon:v2.0.0
+    container_name: xyo-lexicon
     restart: unless-stopped
     user: "10001:10001"
     security_opt:
@@ -95,11 +95,11 @@ services:
       start_period: 5s
 
   # ----------------------------------------------------------------------------
-  # XYO Yoda: Machine learning categorization engine
+  # XYO Anvil: Deterministic heuristics, disambiguation & MCC matching engine
   # ----------------------------------------------------------------------------
-  xyo-yoda:
-    image: cr.syniol.com/xyo/yoda:v2.0.0
-    container_name: xyo-yoda
+  xyo-anvil:
+    image: cr.syniol.com/xyo/anvil:v2.0.0
+    container_name: xyo-anvil
     restart: unless-stopped
     user: "10001:10001"
     security_opt:
@@ -149,8 +149,8 @@ services:
     environment:
       - LOG_LEVEL=info
       - XYO_BIND_ADDR=0.0.0.0:9091
-      - XYO_ORACLE_ADDR=xyo-oracle:9092
-      - XYO_YODA_ADDR=xyo-yoda:9093
+      - XYO_LEXICON_ADDR=xyo-lexicon:9092
+      - XYO_ANVIL_ADDR=xyo-anvil:9093
       - XYO_LOGOS_DIR=/var/lib/xyo/logos
       - XYO_LICENSE_KEY=${XYO_LICENSE_KEY}
     volumes:
@@ -172,9 +172,9 @@ services:
       retries: 3
       start_period: 5s
     depends_on:
-      xyo-oracle:
+      xyo-lexicon:
         condition: service_healthy
-      xyo-yoda:
+      xyo-anvil:
         condition: service_healthy
 
   # ----------------------------------------------------------------------------

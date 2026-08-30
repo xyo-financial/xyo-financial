@@ -20,48 +20,48 @@ spec:
     {{- include "xyo-appliance.componentSelectorLabels" (dict "root" . "component" "enrichment") | nindent 4 }}
 ---
 {{- end }}
-{{- if .Values.oracle.enabled }}
+{{- if .Values.lexicon.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "xyo-appliance.fullname" . }}-oracle
+  name: {{ include "xyo-appliance.fullname" . }}-lexicon
   labels:
-    {{- include "xyo-appliance.componentLabels" (dict "root" . "component" "oracle") | nindent 4 }}
-  {{- with .Values.oracle.service.annotations }}
+    {{- include "xyo-appliance.componentLabels" (dict "root" . "component" "lexicon") | nindent 4 }}
+  {{- with .Values.lexicon.service.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.oracle.service.type | default "ClusterIP" }}
+  type: {{ .Values.lexicon.service.type | default "ClusterIP" }}
   ports:
-    - port: {{ .Values.oracle.service.port }}
-      targetPort: {{ .Values.oracle.service.targetPort | default 9092 }}
+    - port: {{ .Values.lexicon.service.port }}
+      targetPort: {{ .Values.lexicon.service.targetPort | default 9092 }}
       protocol: TCP
       name: grpc
   selector:
-    {{- include "xyo-appliance.componentSelectorLabels" (dict "root" . "component" "oracle") | nindent 4 }}
+    {{- include "xyo-appliance.componentSelectorLabels" (dict "root" . "component" "lexicon") | nindent 4 }}
 ---
 {{- end }}
-{{- if .Values.yoda.enabled }}
+{{- if .Values.anvil.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "xyo-appliance.fullname" . }}-yoda
+  name: {{ include "xyo-appliance.fullname" . }}-anvil
   labels:
-    {{- include "xyo-appliance.componentLabels" (dict "root" . "component" "yoda") | nindent 4 }}
-  {{- with .Values.yoda.service.annotations }}
+    {{- include "xyo-appliance.componentLabels" (dict "root" . "component" "anvil") | nindent 4 }}
+  {{- with .Values.anvil.service.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.yoda.service.type | default "ClusterIP" }}
+  type: {{ .Values.anvil.service.type | default "ClusterIP" }}
   ports:
-    - port: {{ .Values.yoda.service.port }}
-      targetPort: {{ .Values.yoda.service.targetPort | default 9093 }}
+    - port: {{ .Values.anvil.service.port }}
+      targetPort: {{ .Values.anvil.service.targetPort | default 9093 }}
       protocol: TCP
       name: grpc
   selector:
-    {{- include "xyo-appliance.componentSelectorLabels" (dict "root" . "component" "yoda") | nindent 4 }}
+    {{- include "xyo-appliance.componentSelectorLabels" (dict "root" . "component" "anvil") | nindent 4 }}
 ---
 {{- end }}
 {{- if and .Values.postgresql.enabled (not .Values.postgresql.external.enabled) }}
