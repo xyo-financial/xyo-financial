@@ -22,7 +22,7 @@ Six SDKs generate their transport layer from the specification and wrap it by ha
 | **C++ (C++17)** | [`xyo-financial/sdk-cpp`](https://github.com/xyo-financial/sdk-cpp) | `xyo-sdk` | `cpp-restsdk` *(reference only)* | Hand-written on `cpr` | `v2.1.0` | **Stable** |
 | **Rust** | [`xyo-financial/sdk-rust`](https://github.com/xyo-financial/sdk-rust) | `xyo-sdk` | `rust` (`openapi-client`) | Generated | `v2.1.0` | **Stable** |
 | **Go (Golang)** | [`xyo-financial/sdk-go`](https://github.com/xyo-financial/sdk-go) | `github.com/xyo-financial/sdk-go/v2` | `go` (`openapi` package) | Generated | `v2.1.1` | **Stable** |
-| **Java (Java 17+)** | [`xyo-financial/sdk-java`](https://github.com/xyo-financial/sdk-java) | `com.xyo.financial:xyo-sdk` | `java` (Native library) | Generated | `v2.1.0` | **Stable** |
+| **Java (Java 17+)** | [`xyo-financial/sdk-java`](https://github.com/xyo-financial/sdk-java) | `io.github.xyo-financial:xyo-sdk` | `java` (Native library) | Generated | `v2.1.0` | **Stable** |
 | **.NET / C# (.NET 8+)** | [`xyo-financial/sdk-dotnet`](https://github.com/xyo-financial/sdk-dotnet) | `Xyo.Sdk` | `csharp` | Generated | `v2.1.0` | **Stable** |
 | **Python (3.9+)** | [`xyo-financial/sdk-python`](https://github.com/xyo-financial/sdk-python) | `xyo-sdk` | `python` | Generated | `v2.1.0` | **Stable** |
 | **Node.js / TypeScript** | [`xyo-financial/sdk-node`](https://github.com/xyo-financial/sdk-node) | `xyo-sdk` | `typescript-fetch` | Generated | `v2.1.0` | **Stable** |

@@ -7,7 +7,7 @@
     <a href="https://github.com/xyo-financial"><img src="https://img.shields.io/badge/Security-TLS%201.3%20%7C%20mTLS%20%7C%20FIPS%20140--3-success.svg" alt="Security" /></a>
     <a href="./sdk/Architecture.md"><img src="https://img.shields.io/badge/Architecture-Deterministic%20SDKs-blueviolet.svg" alt="Deterministic SDKs" /></a>
     <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License: Apache-2.0" /></a>
-    <img src="https://img.shields.io/badge/SDK%20Version-v2.0.x-orange.svg" alt="SDK v2.0.x" />
+    <img src="https://img.shields.io/badge/SDK%20Version-v2.1.x-brightgreen.svg" alt="SDK v2.1.x" />
   </p>
 </div>
 
@@ -37,7 +37,7 @@ All XYO client libraries are generated deterministically from our canonical Open
 | **C++ (C++17)**          | [xyo-financial/sdk-cpp](https://github.com/xyo-financial/sdk-cpp)       | `CMake / Conan / vcpkg`                     | `v2.1.0` | **Stable** |
 | **Rust**                 | [xyo-financial/sdk-rust](https://github.com/xyo-financial/sdk-rust)     | `cargo add xyo-sdk`                         | `v2.1.0` | **Stable** |
 | **Go (Golang)**          | [xyo-financial/sdk-go](https://github.com/xyo-financial/sdk-go)         | `go get github.com/xyo-financial/sdk-go/v2` | `v2.1.1` | **Stable** |
-| **Java (Java 17+)**      | [xyo-financial/sdk-java](https://github.com/xyo-financial/sdk-java)     | `com.xyo.financial:xyo-sdk:2.1.0`           | `v2.1.0` | **Stable** |
+| **Java (Java 17+)**      | [xyo-financial/sdk-java](https://github.com/xyo-financial/sdk-java)     | `io.github.xyo-financial:xyo-sdk:2.1.0`     | `v2.1.0` | **Stable** |
 | **.NET / C# (.NET 8+)**  | [xyo-financial/sdk-dotnet](https://github.com/xyo-financial/sdk-dotnet) | `dotnet add package Xyo.Sdk`                | `v2.1.0` | **Stable** |
 | **Python (3.9+)**        | [xyo-financial/sdk-python](https://github.com/xyo-financial/sdk-python) | `pip install xyo-sdk`                       | `v2.1.0` | **Stable** |
 | **Node.js / TypeScript** | [xyo-financial/sdk-node](https://github.com/xyo-financial/sdk-node)     | `npm install xyo-sdk`                       | `v2.1.0` | **Stable** |

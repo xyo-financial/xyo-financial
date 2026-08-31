@@ -359,20 +359,23 @@ Syniol provides official, type-safe SDK client libraries to simplify integration
   ```
 
 ### ☕ Java SDK
-- **Artifact**: `com.xyo:xyo-sdk:2.0.0` / `com.xyo.financial:xyo-sdk`
+- **Artifact**: `io.github.xyo-financial:xyo-sdk:2.1.0`
   ```xml
   <dependency>
-      <groupId>com.xyo.financial</groupId>
+      <groupId>io.github.xyo-financial</groupId>
       <artifactId>xyo-sdk</artifactId>
-      <version>2.0.0</version>
+      <version>2.1.0</version>
   </dependency>
   ```
   ```java
-  ClientConfig config = new ClientConfig.Builder("your-api-key")
-          .apiBaseUrl("http://localhost:8080")
+  ClientConfig config = ClientConfig.builder("your-api-key")
+          .baseUrl("http://localhost:8080")
           .build();
   XyoClient client = new XyoClient(config);
-  EnrichmentResponse res = client.enrichTransaction(new EnrichmentRequest("SPOTIFY PREMIUM", "SE"));
+  EnrichmentRequest req = new EnrichmentRequest();
+  req.setContent("SPOTIFY PREMIUM");
+  req.setCountryCode("SE");
+  EnrichmentResponse res = client.enrichTransaction(req);
   ```
 
 ### 🐍 Python SDK

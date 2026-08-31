@@ -208,34 +208,32 @@ func main() {
 
 ### 3.3 Python Integration (Modern Async / Sync)
 
+#### Installation
+```bash
+pip install xyo-sdk
+```
+
+#### Complete Implementation (`main.py`)
 ```python
 import os
-import httpx
+from xyo import Client, ClientConfig, EnrichmentRequest
 
-XYO_API_KEY = os.getenv("XYO_API_KEY", "xyo_live_your_api_key_here")
-XYO_BASE_URL = "https://api.xyo.financial"
+# 1. Initialize Client Configuration
+api_key = os.getenv("XYO_API_KEY", "xyo_live_your_api_key_here")
+config = ClientConfig(api_key=api_key, base_url="https://api.xyo.financial")
+client = Client(config)
 
-def enrich_transaction(content: str, country_code: str) -> dict:
-    headers = {
-        "Authorization": f"Bearer {XYO_API_KEY}",
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-    }
-    payload = {
-        "content": content,
-        "countryCode": country_code,
-    }
-
-    with httpx.Client(base_url=XYO_BASE_URL, timeout=5.0) as client:
-        response = client.post("/v1/ai/finance/enrichment/transaction", json=payload, headers=headers)
-        response.raise_for_status()
-        return response.json()
+# 2. Execute Real-Time Enrichment
+def enrich_transaction(content: str, country_code: str):
+    request = EnrichmentRequest(content=content, country_code=country_code)
+    return client.enrich_transaction(request)
 
 if __name__ == "__main__":
     result = enrich_transaction("UBER *TRIP 12345 HELP.UBER.COM", "GB")
-    print(f"Merchant: {result['merchant']}")
-    print(f"Categories: {', '.join(result['categories'])}")
-    print(f"Location: {result['location']}")
+    print(f"Merchant:   {result.merchant}")
+    print(f"Categories: {', '.join(result.categories)}")
+    print(f"Location:   {result.location}")
+    print(f"Address:    {result.address}")
 ```
 
 ---
@@ -245,37 +243,45 @@ if __name__ == "__main__":
 #### Dependency (`pom.xml`)
 ```xml
 <dependency>
-    <groupId>com.xyo</groupId>
+    <groupId>io.github.xyo-financial</groupId>
     <artifactId>xyo-sdk</artifactId>
-    <version>1.0.0</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 
-#### Code Snippet
+#### Code Snippet (`PaymentEnrichmentService.java`)
 ```java
 package com.fintech.enrichment;
 
-import com.xyo.financial.ClientConfig;
-import com.xyo.financial.XyoClient;
-import com.xyo.financial.model.EnrichmentRequest;
-import com.xyo.financial.model.EnrichmentResponse;
+import financial.xyo.ClientConfig;
+import financial.xyo.XyoClient;
+import financial.xyo.model.EnrichmentRequest;
+import financial.xyo.model.EnrichmentResponse;
 
-public class PaymentEnrichmentService {
+import java.time.Duration;
+
+public class PaymentEnrichmentService implements AutoCloseable {
 
     private final XyoClient xyoClient;
 
     public PaymentEnrichmentService() {
-        ClientConfig config = new ClientConfig.Builder(System.getenv("XYO_API_KEY"))
-                .apiBaseUrl("https://api.xyo.financial")
-                .connectTimeoutMs(3000)
-                .requestTimeoutMs(5000)
+        ClientConfig config = ClientConfig.builder(System.getenv("XYO_API_KEY"))
+                .baseUrl("https://api.xyo.financial")
+                .timeout(Duration.ofSeconds(5))
                 .build();
         this.xyoClient = new XyoClient(config);
     }
 
     public EnrichmentResponse enrich(String narrative, String countryCode) {
-        EnrichmentRequest request = new EnrichmentRequest(narrative, countryCode);
+        EnrichmentRequest request = new EnrichmentRequest();
+        request.setContent(narrative);
+        request.setCountryCode(countryCode);
         return xyoClient.enrichTransaction(request);
+    }
+
+    @Override
+    public void close() {
+        xyoClient.close();
     }
 }
 ```
