@@ -34,7 +34,7 @@ All XYO client libraries are generated deterministically from our canonical Open
 
 | Language / Platform      | Repository                                                              | Installation                                | Version  | Status     |
 |:-------------------------|:------------------------------------------------------------------------|:--------------------------------------------|:---------|:-----------|
-| **C++ (C++17)**          | [xyo-financial/sdk-cpp](https://github.com/xyo-financial/sdk-cpp)       | `CMake / Conan / vcpkg`                     | `v2.1.0` | **Stable** |
+| **C++ (C++17)**          | [xyo-financial/sdk-cpp](https://github.com/xyo-financial/sdk-cpp)       | `vcpkg install xyo-sdk / Conan`             | `v2.1.0` | **Stable** |
 | **Rust**                 | [xyo-financial/sdk-rust](https://github.com/xyo-financial/sdk-rust)     | `cargo add xyo-sdk`                         | `v2.1.0` | **Stable** |
 | **Go (Golang)**          | [xyo-financial/sdk-go](https://github.com/xyo-financial/sdk-go)         | `go get github.com/xyo-financial/sdk-go/v2` | `v2.1.1` | **Stable** |
 | **Java (Java 17+)**      | [xyo-financial/sdk-java](https://github.com/xyo-financial/sdk-java)     | `io.github.xyo-financial:xyo-sdk:2.1.0`     | `v2.1.0` | **Stable** |
